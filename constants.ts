@@ -20,12 +20,7 @@ export const LOCATIONS = [
 
 // Configuration for Dynamic Pricing
 export const SURCHARGE_CONFIG = {
-  WEEKEND_MULTIPLIER: 1.15, // 15% extra on Fri/Sat/Sun
   PEAK_MULTIPLIER: 1.30,    // 30% extra on special dates
-  NIGHT_SURCHARGE_RM: 50,
-  NIGHT_SURCHARGE_SGD: 20,
-  NIGHT_START_HOUR: 23,
-  NIGHT_END_HOUR: 7
 };
 
 // Example Peak Dates (YYYY-MM-DD)
@@ -177,9 +172,5 @@ export const FAQS = [
   {
     q: "How do I pay?",
     a: "We accept PayNow, Bank Transfer, or Cash to Driver (in RM or SGD) upon arrival at your destination. A small deposit may be required for peak season bookings."
-  },
-  {
-    q: "Is there a surcharge for late-night pickups?",
-    a: "Yes, a midnight surcharge of RM 50 applies for trips between 11:00 PM and 6:00 AM."
   }
 ];

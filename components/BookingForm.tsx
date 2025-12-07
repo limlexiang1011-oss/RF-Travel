@@ -1,8 +1,9 @@
 
+
 import React, { useState, useEffect, useMemo } from 'react';
 import { BookingState, VehicleType } from '../types';
 import { LOCATIONS, VEHICLES, PRICING_MATRIX, WHATSAPP_NUMBER, SURCHARGE_CONFIG, PEAK_DATES } from '../constants';
-import { MapPin, Calendar, Clock, Users, Briefcase, CheckCircle, ChevronRight, ChevronLeft, ArrowRight, User, Phone, Edit3, ShoppingBag, Backpack, Baby, AlertTriangle, Moon, Zap, MessageCircle } from 'lucide-react';
+import { MapPin, Calendar, Clock, Users, Briefcase, CheckCircle, ChevronRight, ChevronLeft, ArrowRight, User, Phone, Edit3, ShoppingBag, Backpack, Baby, Zap, MessageCircle } from 'lucide-react';
 
 const EXCHANGE_RATE = 3.2;
 
@@ -28,7 +29,7 @@ const INITIAL_STATE: BookingState = {
 interface PriceDetail {
   price: number;
   currency: 'SGD' | 'RM';
-  tags: string[]; // 'Weekend', 'Peak', 'Night'
+  tags: string[]; // 'Peak'
   isQuoteRequired: boolean;
 }
 
@@ -65,22 +66,9 @@ export const BookingForm: React.FC<{ prefillRoute?: { from: string, to: string }
   const nextStep = () => updateState('step', state.step + 1);
   const prevStep = () => updateState('step', state.step - 1);
 
-  // --- Date/Time Helpers ---
-  const checkIsWeekend = (dateStr: string) => {
-    if (!dateStr) return false;
-    const day = new Date(dateStr).getDay();
-    // 0 = Sun, 5 = Fri, 6 = Sat
-    return day === 0 || day === 5 || day === 6;
-  };
-
+  // --- Date Helpers ---
   const checkIsPeak = (dateStr: string) => {
     return PEAK_DATES.includes(dateStr);
-  };
-
-  const checkIsNight = (timeStr: string) => {
-    if (!timeStr) return false;
-    const hour = parseInt(timeStr.split(':')[0], 10);
-    return hour >= SURCHARGE_CONFIG.NIGHT_START_HOUR || hour < SURCHARGE_CONFIG.NIGHT_END_HOUR;
   };
 
   // --- Pricing Logic Helper ---
@@ -127,9 +115,7 @@ export const BookingForm: React.FC<{ prefillRoute?: { from: string, to: string }
     const tags: string[] = [];
     let finalPrice = basePrice;
     
-    const isWeekend = checkIsWeekend(date);
     const isPeak = checkIsPeak(date);
-    const isNight = checkIsNight(time);
 
     // QUOTE REQUIRED CONDITION:
     // If it's a Long Distance Trip (Genting/Malacca/KL) AND it is Peak Season, force Quote Required due to high variability.
@@ -141,22 +127,9 @@ export const BookingForm: React.FC<{ prefillRoute?: { from: string, to: string }
     if (isPeak) {
         finalPrice *= SURCHARGE_CONFIG.PEAK_MULTIPLIER;
         tags.push('Peak Season');
-    } else if (isWeekend) {
-        finalPrice *= SURCHARGE_CONFIG.WEEKEND_MULTIPLIER;
-        tags.push('Weekend Rate');
     }
 
-    // Convert currency if needed BEFORE adding fixed night surcharge? 
-    // Usually base price is in RM in matrix.
-    // If currency is SGD, we convert base first then apply multipliers.
-    // Let's stick to converting at the end for simplicity, but handle Night Surcharge separately.
-    
     let priceInCurrency = isSgd ? Math.ceil(finalPrice / EXCHANGE_RATE) : finalPrice;
-
-    if (isNight) {
-        priceInCurrency += isSgd ? SURCHARGE_CONFIG.NIGHT_SURCHARGE_SGD : SURCHARGE_CONFIG.NIGHT_SURCHARGE_RM;
-        tags.push('Night Surcharge');
-    }
 
     return { 
         price: Math.ceil(priceInCurrency), 
@@ -598,16 +571,6 @@ Please assist with a quote.
                        {vehicle.priceInfo.tags.includes('Peak Season') && (
                            <span className="text-[10px] bg-red-100 text-red-700 px-1.5 py-0.5 rounded-full flex items-center gap-1 font-semibold whitespace-nowrap">
                                <Zap size={10} /> Peak
-                           </span>
-                       )}
-                       {vehicle.priceInfo.tags.includes('Weekend Rate') && (
-                           <span className="text-[10px] bg-orange-100 text-orange-700 px-1.5 py-0.5 rounded-full flex items-center gap-1 font-semibold whitespace-nowrap">
-                               <Calendar size={10} /> Weekend
-                           </span>
-                       )}
-                       {vehicle.priceInfo.tags.includes('Night Surcharge') && (
-                           <span className="text-[10px] bg-indigo-100 text-indigo-700 px-1.5 py-0.5 rounded-full flex items-center gap-1 font-semibold whitespace-nowrap">
-                               <Moon size={10} /> Night
                            </span>
                        )}
                    </div>
