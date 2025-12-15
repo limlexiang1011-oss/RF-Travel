@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { BookingState, VehicleType } from '../types';
 import { LOCATIONS, VEHICLES, PRICING_MATRIX, WHATSAPP_NUMBER, SURCHARGE_CONFIG, PEAK_DATES, GOOGLE_SHEET_SCRIPT_URL } from '../constants';
-import { MapPin, Calendar, Clock, Users, Briefcase, CheckCircle, ChevronRight, ChevronLeft, ArrowRight, User, Phone, Edit3, ShoppingBag, Backpack, Baby, Zap, MessageCircle } from 'lucide-react';
+import { MapPin, Calendar, Clock, Users, Briefcase, CheckCircle, ChevronRight, ChevronLeft, ArrowRight, User, Phone, Edit3, ShoppingBag, Backpack, Baby, Zap, MessageCircle, ChevronDown } from 'lucide-react';
 
 const EXCHANGE_RATE = 3.2;
 
@@ -307,6 +307,10 @@ Please assist with a quote.
     window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`, '_blank');
   };
 
+  // Helper variables for styling
+  const inputBaseClass = "w-full h-12 pl-10 pr-4 bg-white border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500 outline-none text-base transition-all";
+  const selectClass = `${inputBaseClass} appearance-none pr-10`; 
+
   // --- Render Steps ---
 
   // Step 1: Route & Date
@@ -319,29 +323,31 @@ Please assist with a quote.
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">Pick Up</label>
           <div className="relative">
-            <MapPin className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
+            <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 pointer-events-none z-10" />
             <select 
-              className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 outline-none"
+              className={selectClass}
               value={state.fromLocation}
               onChange={(e) => updateState('fromLocation', e.target.value)}
             >
               <option value="">Select Origin</option>
               {LOCATIONS.map(l => <option key={l} value={l}>{l}</option>)}
             </select>
+            <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 pointer-events-none z-10" />
           </div>
         </div>
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">Drop Off / Destination</label>
           <div className="relative">
-            <MapPin className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
+            <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 pointer-events-none z-10" />
             <select 
-               className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 outline-none"
+               className={selectClass}
                value={state.toLocation}
                onChange={(e) => updateState('toLocation', e.target.value)}
             >
               <option value="">Select Destination</option>
               {LOCATIONS.map(l => <option key={l} value={l}>{l}</option>)}
             </select>
+            <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 pointer-events-none z-10" />
           </div>
         </div>
       </div>
@@ -351,10 +357,10 @@ Please assist with a quote.
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">Date</label>
           <div className="relative">
-            <Calendar className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
+            <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 pointer-events-none z-10" />
             <input 
               type="date" 
-              className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 outline-none"
+              className={`${inputBaseClass} appearance-none`}
               value={state.date}
               onChange={(e) => updateState('date', e.target.value)}
             />
@@ -363,10 +369,10 @@ Please assist with a quote.
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">Time</label>
           <div className="relative">
-            <Clock className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
+            <Clock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 pointer-events-none z-10" />
             <input 
               type="time" 
-              className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 outline-none"
+              className={`${inputBaseClass} appearance-none`}
               value={state.time}
               onChange={(e) => updateState('time', e.target.value)}
             />
@@ -376,19 +382,19 @@ Please assist with a quote.
 
       <div className="flex flex-wrap gap-4 my-4 pb-2 border-b border-gray-100">
          <label className="flex items-center gap-2 cursor-pointer">
-           <input type="radio" checked={state.tripType === 'one-way'} onChange={() => updateState('tripType', 'one-way')} className="text-primary-600 focus:ring-primary-500"/>
+           <input type="radio" checked={state.tripType === 'one-way'} onChange={() => updateState('tripType', 'one-way')} className="text-primary-600 focus:ring-primary-500 w-5 h-5"/>
            <span className="font-medium text-gray-700">One Way</span>
          </label>
          <label className="flex items-center gap-2 cursor-pointer">
-           <input type="radio" checked={state.tripType === 'round-trip'} onChange={() => updateState('tripType', 'round-trip')} className="text-primary-600 focus:ring-primary-500"/>
+           <input type="radio" checked={state.tripType === 'round-trip'} onChange={() => updateState('tripType', 'round-trip')} className="text-primary-600 focus:ring-primary-500 w-5 h-5"/>
            <span className="font-medium text-gray-700">Round Trip</span>
          </label>
          <label className="flex items-center gap-2 cursor-pointer">
-           <input type="radio" checked={state.tripType === 'day-trip'} onChange={() => updateState('tripType', 'day-trip')} className="text-primary-600 focus:ring-primary-500"/>
+           <input type="radio" checked={state.tripType === 'day-trip'} onChange={() => updateState('tripType', 'day-trip')} className="text-primary-600 focus:ring-primary-500 w-5 h-5"/>
            <span className="font-medium text-gray-700">Day Trip</span>
          </label>
          <label className="flex items-center gap-2 cursor-pointer">
-           <input type="radio" checked={state.tripType === 'custom'} onChange={() => updateState('tripType', 'custom')} className="text-primary-600 focus:ring-primary-500"/>
+           <input type="radio" checked={state.tripType === 'custom'} onChange={() => updateState('tripType', 'custom')} className="text-primary-600 focus:ring-primary-500 w-5 h-5"/>
            <span className="font-medium text-gray-700">Multi-Stop</span>
          </label>
       </div>
@@ -428,29 +434,31 @@ Please assist with a quote.
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Return Pick Up</label>
               <div className="relative">
-                <MapPin className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
+                <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 pointer-events-none z-10" />
                 <select 
-                  className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 outline-none"
+                  className={selectClass}
                   value={state.returnFromLocation || ''}
                   onChange={(e) => updateState('returnFromLocation', e.target.value)}
                 >
                   <option value="">Select Return Origin</option>
                   {LOCATIONS.map(l => <option key={l} value={l}>{l}</option>)}
                 </select>
+                <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 pointer-events-none z-10" />
               </div>
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Return Drop Off</label>
               <div className="relative">
-                <MapPin className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
+                <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 pointer-events-none z-10" />
                 <select 
-                   className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 outline-none"
+                   className={selectClass}
                    value={state.returnToLocation || ''}
                    onChange={(e) => updateState('returnToLocation', e.target.value)}
                 >
                   <option value="">Select Return Dest.</option>
                   {LOCATIONS.map(l => <option key={l} value={l}>{l}</option>)}
                 </select>
+                <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 pointer-events-none z-10" />
               </div>
             </div>
           </div>
@@ -460,7 +468,7 @@ Please assist with a quote.
               <label className="block text-sm font-medium text-gray-700 mb-1">Return Date</label>
               <input 
                 type="date" 
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 outline-none"
+                className={`${inputBaseClass} appearance-none`}
                 value={state.returnDate || ''}
                 onChange={(e) => updateState('returnDate', e.target.value)}
               />
@@ -469,7 +477,7 @@ Please assist with a quote.
               <label className="block text-sm font-medium text-gray-700 mb-1">Return Time</label>
               <input 
                 type="time" 
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 outline-none"
+                className={`${inputBaseClass} appearance-none`}
                 value={state.returnTime || ''}
                 onChange={(e) => updateState('returnTime', e.target.value)}
               />
@@ -727,11 +735,11 @@ Please assist with a quote.
          <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Your Name</label>
             <div className="relative">
-                <User className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
+                <User className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 pointer-events-none z-10" />
                 <input 
                     type="text" 
                     placeholder="Enter your name"
-                    className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 outline-none"
+                    className={`${inputBaseClass}`}
                     value={state.name}
                     onChange={(e) => updateState('name', e.target.value)}
                 />
@@ -740,11 +748,11 @@ Please assist with a quote.
          <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">WhatsApp / Phone</label>
              <div className="relative">
-                <Phone className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
+                <Phone className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 pointer-events-none z-10" />
                 <input 
                     type="tel" 
                     placeholder="e.g. +65 9123 4567"
-                    className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 outline-none"
+                    className={`${inputBaseClass}`}
                     value={state.phone}
                     onChange={(e) => updateState('phone', e.target.value)}
                 />
@@ -753,10 +761,10 @@ Please assist with a quote.
          <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Special Requests (Optional)</label>
             <div className="relative">
-                <Edit3 className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
+                <Edit3 className="absolute left-3 top-3 h-5 w-5 text-gray-400 pointer-events-none z-10" />
                 <textarea 
                     placeholder="E.g. Elderly passenger, need stops, etc."
-                    className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 outline-none h-20"
+                    className="w-full pl-10 pr-3 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500 outline-none h-24 text-base"
                     value={state.notes}
                     onChange={(e) => updateState('notes', e.target.value)}
                 />

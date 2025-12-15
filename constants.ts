@@ -11,6 +11,10 @@ export const LOCATIONS = [
   "Johor Bahru - Legoland",
   "Johor Bahru - Desaru",
   "Johor Bahru - Mersing Jetty",
+  "Johor Tour (10 Hour)",
+  "Johor Tour (12 Hour)",
+  "Local Tour (10 Hour)",
+  "Local Tour (12 Hour)",
   "Kota Tinggi",
   "Kluang",
   "Batu Pahat",
@@ -80,6 +84,29 @@ const R = 3.2; // Rate used to store SGD prices as MYR in matrix, so (Value * 3.
 export const PRICING_MATRIX: RoutePrice[] = [
   // --- FROM SINGAPORE ---
   
+  // SG -> Johor Day Trip (10 Hour)
+  {
+    from: "Singapore",
+    to: "Johor Tour (10 Hour)",
+    prices: {
+      [VehicleType.SEDAN]: 300 * R,
+      [VehicleType.MPV_STD]: 350 * R,
+      [VehicleType.MPV_LUX]: 400 * R,
+      [VehicleType.VAN]: 450 * R
+    }
+  },
+  // SG -> Johor Day Trip (12 Hour)
+  {
+    from: "Singapore",
+    to: "Johor Tour (12 Hour)",
+    prices: {
+      [VehicleType.SEDAN]: 350 * R,
+      [VehicleType.MPV_STD]: 400 * R,
+      [VehicleType.MPV_LUX]: 450 * R,
+      [VehicleType.VAN]: 500 * R
+    }
+  },
+
   // SG -> JB (Covers City, Senai, Legoland)
   // SGD: 90, 100, 120, 120
   {
@@ -285,6 +312,29 @@ export const PRICING_MATRIX: RoutePrice[] = [
 
   // --- FROM KUALA LUMPUR ---
   
+  // KL City Tour (10 Hour)
+  {
+    from: "City Area",
+    to: "Local Tour (10 Hour)",
+    prices: {
+      [VehicleType.SEDAN]: 650,
+      [VehicleType.MPV_STD]: 800,
+      [VehicleType.MPV_LUX]: 1000,
+      [VehicleType.VAN]: 1100
+    }
+  },
+  // KL City Tour (12 Hour)
+  {
+    from: "City Area",
+    to: "Local Tour (12 Hour)",
+    prices: {
+      [VehicleType.SEDAN]: 750,
+      [VehicleType.MPV_STD]: 950,
+      [VehicleType.MPV_LUX]: 1200,
+      [VehicleType.VAN]: 1400
+    }
+  },
+
   // KL -> KLIA
   {
     from: "City Area", // Matches "Kuala Lumpur - City Area"
@@ -365,6 +415,29 @@ export const PRICING_MATRIX: RoutePrice[] = [
 
   // --- FROM JOHOR BAHRU (JB) ---
   
+  // JB City Tour (10 Hour)
+  {
+    from: "Johor Bahru",
+    to: "Local Tour (10 Hour)",
+    prices: {
+      [VehicleType.SEDAN]: 650,
+      [VehicleType.MPV_STD]: 800,
+      [VehicleType.MPV_LUX]: 1000,
+      [VehicleType.VAN]: 1100
+    }
+  },
+  // JB City Tour (12 Hour)
+  {
+    from: "Johor Bahru",
+    to: "Local Tour (12 Hour)",
+    prices: {
+      [VehicleType.SEDAN]: 750,
+      [VehicleType.MPV_STD]: 950,
+      [VehicleType.MPV_LUX]: 1200,
+      [VehicleType.VAN]: 1400
+    }
+  },
+
   {
     from: "Johor Bahru",
     to: "Johor Bahru", // JB Local - Moved to Top
