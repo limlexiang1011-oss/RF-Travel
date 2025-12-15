@@ -318,6 +318,17 @@ export const PRICING_MATRIX: RoutePrice[] = [
       [VehicleType.VAN]: 350
     }
   },
+  // KL -> Cameron
+  {
+    from: "City Area",
+    to: "Cameron",
+    prices: {
+      [VehicleType.SEDAN]: 600,
+      [VehicleType.MPV_STD]: 750,
+      [VehicleType.MPV_LUX]: 900,
+      [VehicleType.VAN]: 950
+    }
+  },
   // KL -> Malacca
   {
     from: "City Area",
@@ -353,8 +364,17 @@ export const PRICING_MATRIX: RoutePrice[] = [
   },
 
   // --- FROM JOHOR BAHRU (JB) ---
-  // NOTE: Specific destinations (Desaru, Kota Tinggi) must come before general "Johor Bahru" to ensure correct matching.
-
+  
+  {
+    from: "Johor Bahru",
+    to: "Johor Bahru", // JB Local - Moved to Top
+    prices: {
+      [VehicleType.SEDAN]: 50,
+      [VehicleType.MPV_STD]: 80,
+      [VehicleType.MPV_LUX]: 120,
+      [VehicleType.VAN]: 150
+    }
+  },
   {
     from: "Johor Bahru",
     to: "Kota Tinggi",
@@ -533,16 +553,6 @@ export const PRICING_MATRIX: RoutePrice[] = [
       [VehicleType.MPV_STD]: 1400,
       [VehicleType.MPV_LUX]: 1600,
       [VehicleType.VAN]: 1700
-    }
-  },
-  {
-    from: "Johor Bahru",
-    to: "Johor Bahru", // JB Local
-    prices: {
-      [VehicleType.SEDAN]: 50,
-      [VehicleType.MPV_STD]: 80,
-      [VehicleType.MPV_LUX]: 120,
-      [VehicleType.VAN]: 150
     }
   }
 ];
