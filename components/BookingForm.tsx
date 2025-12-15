@@ -1,8 +1,7 @@
 
-
 import React, { useState, useEffect, useMemo } from 'react';
 import { BookingState, VehicleType } from '../types';
-import { LOCATIONS, VEHICLES, PRICING_MATRIX, WHATSAPP_NUMBER, SURCHARGE_CONFIG, PEAK_DATES } from '../constants';
+import { LOCATIONS, VEHICLES, PRICING_MATRIX, WHATSAPP_NUMBER, SURCHARGE_CONFIG, PEAK_DATES, GOOGLE_SHEET_SCRIPT_URL } from '../constants';
 import { MapPin, Calendar, Clock, Users, Briefcase, CheckCircle, ChevronRight, ChevronLeft, ArrowRight, User, Phone, Edit3, ShoppingBag, Backpack, Baby, Zap, MessageCircle } from 'lucide-react';
 
 const EXCHANGE_RATE = 3.2;
@@ -14,6 +13,7 @@ const INITIAL_STATE: BookingState = {
   date: '',
   time: '09:00',
   tripType: 'one-way',
+  dayTripDuration: 10,
   paxAdults: 2,
   paxChildren: 0,
   luggageLarge: 1,
@@ -140,6 +140,10 @@ export const BookingForm: React.FC<{ prefillRoute?: { from: string, to: string }
   };
 
   const calculateTotal = (vehicleType: VehicleType) => {
+    if (state.tripType === 'day-trip') {
+       return { display: 'Contact for Quote', isQuote: true, tags: [`Day Trip (${state.dayTripDuration} Hours)`] };
+    }
+
     const outbound = getLegPrice(state.fromLocation, state.toLocation, state.date, state.time, vehicleType);
     
     if (outbound.isQuoteRequired) {
@@ -198,13 +202,63 @@ export const BookingForm: React.FC<{ prefillRoute?: { from: string, to: string }
     });
   }, [state]);
 
+  // --- Google Sheet Submission ---
+  const submitToGoogleSheet = async (priceDisplay: string) => {
+    if (!GOOGLE_SHEET_SCRIPT_URL) return;
+
+    let tripTypeStr: string = state.tripType;
+    if (state.tripType === 'day-trip') tripTypeStr = `Day Trip (${state.dayTripDuration}H)`;
+
+    const payload = {
+      timestamp: new Date().toISOString(),
+      name: state.name,
+      phone: state.phone,
+      tripType: tripTypeStr,
+      from: state.fromLocation,
+      to: state.toLocation,
+      dateTime: `${state.date} ${state.time}`,
+      returnFrom: state.returnFromLocation || '',
+      returnTo: state.returnToLocation || '',
+      returnDateTime: state.returnDate ? `${state.returnDate} ${state.returnTime}` : '',
+      vehicle: state.selectedVehicle,
+      price: priceDisplay,
+      pax: `${state.paxAdults} Adt, ${state.paxChildren} Chd`,
+      luggage: `L:${state.luggageLarge}, M:${state.luggageMedium}, S:${state.luggageSmall}, H:${state.luggageHandCarry}`,
+      notes: state.notes
+    };
+
+    try {
+      // mode: 'no-cors' is required for Google Apps Script Web Apps when calling from frontend
+      // This means we won't get a readable response JSON, but the POST will succeed.
+      await fetch(GOOGLE_SHEET_SCRIPT_URL, {
+        method: 'POST',
+        mode: 'no-cors', 
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload)
+      });
+      console.log("Booking data sent to sheet");
+    } catch (error) {
+      console.error("Failed to log booking to sheet", error);
+    }
+  };
+
   const handleWhatsAppClick = () => {
     const priceInfo = calculateTotal(state.selectedVehicle!);
     const priceDisplay = priceInfo.isQuote ? "Quote Required" : priceInfo.display;
 
+    // 1. Send Data to Google Sheet (Fire and forget, don't block UI)
+    submitToGoogleSheet(priceDisplay);
+
+    // 2. Open WhatsApp
     const returnDetails = state.tripType === 'round-trip' 
         ? `\n*Return Trip:*\n*From:* ${state.returnFromLocation}\n*To:* ${state.returnToLocation}\n*Date:* ${state.returnDate} @ ${state.returnTime}`
         : '';
+    
+    let tripTypeDisplay = 'One Way';
+    if (state.tripType === 'round-trip') tripTypeDisplay = 'Round Trip';
+    if (state.tripType === 'day-trip') tripTypeDisplay = `Day Trip (${state.dayTripDuration} Hours)`;
 
     const luggageSummary = [
       state.luggageLarge > 0 ? `${state.luggageLarge} Large (28")` : '',
@@ -216,9 +270,9 @@ export const BookingForm: React.FC<{ prefillRoute?: { from: string, to: string }
     const msg = `
 *New Booking Enquiry*
 -------------------
-*Trip Type:* ${state.tripType === 'round-trip' ? 'Round Trip' : 'One Way'}
+*Trip Type:* ${tripTypeDisplay}
 
-*Outbound Trip:*
+*Itinerary / Pick Up:*
 *From:* ${state.fromLocation} 
 *To:* ${state.toLocation}
 *Date:* ${state.date} @ ${state.time}
@@ -277,7 +331,7 @@ Please assist with a quote.
           </div>
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Drop Off</label>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Drop Off / Destination</label>
           <div className="relative">
             <MapPin className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
             <select 
@@ -330,10 +384,39 @@ Please assist with a quote.
            <span className="font-medium text-gray-700">Round Trip</span>
          </label>
          <label className="flex items-center gap-2 cursor-pointer">
+           <input type="radio" checked={state.tripType === 'day-trip'} onChange={() => updateState('tripType', 'day-trip')} className="text-primary-600 focus:ring-primary-500"/>
+           <span className="font-medium text-gray-700">Day Trip</span>
+         </label>
+         <label className="flex items-center gap-2 cursor-pointer">
            <input type="radio" checked={state.tripType === 'custom'} onChange={() => updateState('tripType', 'custom')} className="text-primary-600 focus:ring-primary-500"/>
-           <span className="font-medium text-gray-700">Multi-Stop ({'>'}2 Trips)</span>
+           <span className="font-medium text-gray-700">Multi-Stop</span>
          </label>
       </div>
+
+      {state.tripType === 'day-trip' && (
+        <div className="bg-orange-50 p-4 rounded-xl border border-orange-100 animate-fadeIn mb-4">
+            <div className="text-sm font-bold text-orange-800 mb-3 flex items-center gap-2">
+                <Clock size={16}/> Select Duration
+            </div>
+            <div className="flex gap-4">
+                <button 
+                    onClick={() => updateState('dayTripDuration', 10)}
+                    className={`flex-1 py-3 rounded-lg border font-semibold transition-all ${state.dayTripDuration === 10 ? 'bg-orange-500 text-white border-orange-600 shadow-md' : 'bg-white text-gray-600 border-gray-200 hover:bg-gray-50'}`}
+                >
+                    10 Hours
+                </button>
+                <button 
+                    onClick={() => updateState('dayTripDuration', 12)}
+                    className={`flex-1 py-3 rounded-lg border font-semibold transition-all ${state.dayTripDuration === 12 ? 'bg-orange-500 text-white border-orange-600 shadow-md' : 'bg-white text-gray-600 border-gray-200 hover:bg-gray-50'}`}
+                >
+                    12 Hours
+                </button>
+            </div>
+            <p className="text-xs text-orange-700 mt-2">
+                * Private Charter: Driver & Vehicle remains with you for the selected duration. Ideal for sightseeing or shopping.
+            </p>
+        </div>
+      )}
 
       {state.tripType === 'round-trip' && (
         <div className="space-y-4 bg-primary-50 p-4 rounded-xl border border-primary-100 animate-fadeIn">
@@ -550,7 +633,7 @@ Please assist with a quote.
               <h4 className="font-bold text-gray-900">{vehicle.type}</h4>
               <p className="text-xs text-gray-500 mb-2">{vehicle.description}</p>
               <div className="flex items-center justify-center sm:justify-start gap-3 text-xs text-gray-600">
-                <span className={`flex items-center gap-1 ${totalPax > vehicle.maxPax ? 'text-red-500 font-bold' : ''}`}><Users size={12}/> Max {vehicle.maxPax}</span>
+                <span className={`flex items-center gap-1 ${totalPax > vehicle.maxPax ? 'text-red-500 font-bold' : ''}`}><Users size={12}/> {vehicle.paxLabel || `Max ${vehicle.maxPax} Pax`}</span>
                 <span className="flex items-center gap-1"><Briefcase size={12}/> Max {vehicle.maxLuggage} Large bags</span>
               </div>
               {!vehicle.isCapacityOk && (
@@ -568,11 +651,11 @@ Please assist with a quote.
                {/* Badges for Surcharges */}
                {vehicle.priceInfo.tags.length > 0 && (
                    <div className="flex flex-wrap gap-1 justify-end mt-1 max-w-[150px]">
-                       {vehicle.priceInfo.tags.includes('Peak Season') && (
-                           <span className="text-[10px] bg-red-100 text-red-700 px-1.5 py-0.5 rounded-full flex items-center gap-1 font-semibold whitespace-nowrap">
-                               <Zap size={10} /> Peak
+                       {vehicle.priceInfo.tags.map(t => (
+                           <span key={t} className="text-[10px] bg-orange-100 text-orange-800 px-1.5 py-0.5 rounded-full flex items-center gap-1 font-semibold whitespace-nowrap">
+                               {t}
                            </span>
-                       )}
+                       ))}
                    </div>
                )}
             </div>

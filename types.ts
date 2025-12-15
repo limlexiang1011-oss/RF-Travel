@@ -1,9 +1,9 @@
 
 export enum VehicleType {
-  SEDAN = 'Sedan (4 Pax)',
-  MPV_STD = 'Standard MPV (7 Pax)',
-  MPV_LUX = 'Luxury MPV (Alphard)',
-  VAN = 'Large Multi MPV (9 Pax)'
+  SEDAN = 'Sedan',
+  MPV_STD = 'Standard MPV',
+  MPV_LUX = 'Luxury MPV',
+  VAN = 'Large Multi MPV'
 }
 
 export interface RoutePrice {
@@ -18,6 +18,7 @@ export interface VehicleSpecs {
   type: VehicleType;
   maxPax: number;
   maxLuggage: number; // calculated as mixed units roughly
+  paxLabel?: string;
   description: string;
   image: string;
 }
@@ -28,7 +29,8 @@ export interface BookingState {
   toLocation: string;
   date: string;
   time: string;
-  tripType: 'one-way' | 'round-trip' | 'custom';
+  tripType: 'one-way' | 'round-trip' | 'day-trip' | 'custom';
+  dayTripDuration?: 10 | 12;
   returnDate?: string;
   returnTime?: string;
   returnFromLocation?: string;

@@ -9,7 +9,7 @@ export const PriceTable: React.FC<{ onBook: (from: string, to: string) => void }
   const filteredRoutes = PRICING_MATRIX.filter(r => {
     if (activeTab === 'SG') return r.from === 'Singapore';
     if (activeTab === 'JB') return r.from === 'Johor Bahru';
-    if (activeTab === 'KL') return r.from === 'Kuala Lumpur';
+    if (activeTab === 'KL') return r.from === 'Kuala Lumpur' || r.from === 'City Center' || r.from === 'City Area' || r.from === 'KLIA';
     return false;
   });
 
@@ -35,6 +35,7 @@ export const PriceTable: React.FC<{ onBook: (from: string, to: string) => void }
               <th className="px-6 py-3">Sedan (4)</th>
               <th className="px-6 py-3">MPV (7)</th>
               <th className="px-6 py-3">Alphard</th>
+              <th className="px-6 py-3">Large (10)</th>
               <th className="px-6 py-3">Action</th>
             </tr>
           </thead>
@@ -49,15 +50,24 @@ export const PriceTable: React.FC<{ onBook: (from: string, to: string) => void }
                  return `${currency} ${val}`;
               };
 
+              // Helper to display From location if it varies (specific for KL tab)
+              const fromDisplay = activeTab === 'KL' && (route.from === 'KLIA' || route.from === 'City Area') 
+                ? <span className="text-xs text-gray-500 block font-normal">from {route.from === 'City Area' ? 'City Area' : 'KLIA'}</span>
+                : null;
+
               return (
                 <tr key={idx} className="bg-white border-b hover:bg-gray-50">
-                  <td className="px-6 py-4 font-medium text-gray-900">{route.to}</td>
+                  <td className="px-6 py-4 font-medium text-gray-900">
+                    {route.to}
+                    {fromDisplay}
+                  </td>
                   <td className="px-6 py-4 text-gray-600">{formatPrice(route.prices[VehicleType.SEDAN])}</td>
                   <td className="px-6 py-4 font-bold text-primary-700">{formatPrice(route.prices[VehicleType.MPV_STD])}</td>
                   <td className="px-6 py-4 text-gray-600">{formatPrice(route.prices[VehicleType.MPV_LUX])}</td>
+                  <td className="px-6 py-4 text-gray-600">{formatPrice(route.prices[VehicleType.VAN])}</td>
                   <td className="px-6 py-4">
                     <button 
-                      onClick={() => onBook(route.from, route.to)}
+                      onClick={() => onBook(activeTab === 'KL' ? (route.from === 'City Area' ? 'Kuala Lumpur - City Area' : 'Kuala Lumpur - KLIA 1/2') : route.from, route.to)}
                       className="text-primary-600 hover:underline font-semibold text-xs uppercase"
                     >
                       Book
@@ -67,7 +77,7 @@ export const PriceTable: React.FC<{ onBook: (from: string, to: string) => void }
               );
             })}
             {filteredRoutes.length === 0 && (
-              <tr><td colSpan={5} className="text-center py-8 text-gray-500">No popular routes displayed. Use the booking form for a custom quote.</td></tr>
+              <tr><td colSpan={6} className="text-center py-8 text-gray-500">No popular routes displayed. Use the booking form for a custom quote.</td></tr>
             )}
           </tbody>
         </table>
