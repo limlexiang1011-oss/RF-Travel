@@ -44,19 +44,15 @@ const App: React.FC = () => {
   const [prefillRoute, setPrefillRoute] = useState<{from: string, to: string} | undefined>(undefined);
   const [heroIndex, setHeroIndex] = useState(0);
 
-  // --- Premium Marquee State & Refs ---
   const trackRef = useRef<HTMLDivElement>(null);
-  // Using a ref for animation state prevents re-renders on every frame (60fps)
   const animState = useRef({
     currentPos: 0,
     isDragging: false,
     startX: 0,
     startPos: 0,
-    velocity: 0.5 // Base speed (pixels per frame)
+    velocity: 0.5 
   });
 
-  // Duplicate items enough times to fill screens and provide buffer for seamless loop
-  // 8 repetitions * 2 items = 16 items total.
   const displayTestimonials = Array(8).fill(TESTIMONIALS).flat();
 
   useEffect(() => {
@@ -66,55 +62,37 @@ const App: React.FC = () => {
     return () => clearInterval(timer);
   }, []);
 
-  // --- Smooth Marquee Animation Loop ---
   useEffect(() => {
     let animationFrameId: number;
-
     const animate = () => {
       if (trackRef.current) {
         const track = trackRef.current;
         const state = animState.current;
-
         if (!state.isDragging) {
-           // 1. Update Position
            state.currentPos += state.velocity;
         }
-
-        // 2. Seamless Loop Logic
-        // Calculate the width of ONE full cycle (the original set of items)
-        // We measure the first child's width + the gap.
         if (track.children.length > 0) {
            const firstCard = track.children[0] as HTMLElement;
            const cardWidth = firstCard.offsetWidth;
-           // Get gap from computed style (24px for gap-6)
            const style = window.getComputedStyle(track);
            const gap = parseFloat(style.gap || '0');
            const stride = cardWidth + gap;
-           
-           // The distance of one complete original set (2 items)
            const cycleDist = stride * TESTIMONIALS.length;
-
-           // If we have scrolled past one full set, subtract that distance to loop back seamlessly
            if (state.currentPos >= cycleDist) {
              state.currentPos -= cycleDist;
            }
-           // Handle reverse dragging loop
            if (state.currentPos < 0) {
              state.currentPos += cycleDist;
            }
         }
-
-        // 3. Apply Transform (Sub-pixel rendering for premium smoothness)
         track.style.transform = `translate3d(-${state.currentPos}px, 0, 0)`;
       }
       animationFrameId = requestAnimationFrame(animate);
     };
-
     animationFrameId = requestAnimationFrame(animate);
     return () => cancelAnimationFrame(animationFrameId);
   }, []);
 
-  // --- Drag / Interaction Handlers ---
   const handleDragStart = (e: React.MouseEvent | React.TouchEvent) => {
     animState.current.isDragging = true;
     const clientX = 'touches' in e ? e.touches[0].clientX : (e as React.MouseEvent).clientX;
@@ -124,22 +102,13 @@ const App: React.FC = () => {
 
   const handleDragMove = (e: React.MouseEvent | React.TouchEvent) => {
     if (!animState.current.isDragging) return;
-    
-    // Prevent default on mouse move to stop text selection, but be careful on touch to allow vertical scroll
-    if (!('touches' in e)) {
-        e.preventDefault(); 
-    }
-
+    if (!('touches' in e)) { e.preventDefault(); }
     const clientX = 'touches' in e ? e.touches[0].clientX : (e as React.MouseEvent).clientX;
     const diff = animState.current.startX - clientX;
-    
-    // 1:1 movement feels natural
     animState.current.currentPos = animState.current.startPos + diff;
   };
 
-  const handleDragEnd = () => {
-    animState.current.isDragging = false;
-  };
+  const handleDragEnd = () => { animState.current.isDragging = false; };
 
   const scrollToSection = (id: string) => {
     setMobileMenuOpen(false);
@@ -152,8 +121,25 @@ const App: React.FC = () => {
     scrollToSection('booking');
   };
 
-  const handleWhatsAppFloat = () => {
-    window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=Hi, I would like to enquire about a private car booking.`, '_blank');
+  const handleWhatsAppContact = () => {
+    // Trigger Google Conversion tracking
+    if (typeof (window as any).gtag === 'function') {
+      (window as any).gtag('event', 'conversion', {
+        'send_to': 'AW-17810501351/ic3rCKj_w9QbEOfd2qxC'
+      });
+    }
+    
+    const msg = `
+Hi RF Travel, I’m interested in your Private Chauffeur & Transfer Service. 你好 RF Travel，我想咨询关于私人专车接送服务的详情。
+
+My Trip Details / 我的行程详情:
+Date / 日期: 
+Pickup / 出发地: 
+Destination / 目的地: 
+Pax / 人数: 
+    `.trim();
+
+    window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`, '_blank');
   };
 
   return (
@@ -184,7 +170,6 @@ const App: React.FC = () => {
           </button>
         </div>
 
-        {/* Mobile Menu */}
         {mobileMenuOpen && (
           <div className="md:hidden bg-white border-t border-gray-100 p-4 space-y-4 shadow-lg animate-fadeIn">
             <button onClick={() => scrollToSection('home')} className="block w-full text-left font-medium text-gray-700 py-2">Home</button>
@@ -197,8 +182,6 @@ const App: React.FC = () => {
 
       {/* Hero Section */}
       <section id="home" className="relative min-h-[90vh] flex items-center py-20 bg-slate-900 overflow-hidden">
-        
-        {/* Dynamic Background Slideshow */}
         {HERO_IMAGES.map((img, index) => (
           <div 
             key={img}
@@ -208,14 +191,10 @@ const App: React.FC = () => {
             style={{ backgroundImage: `url('${img}')` }}
           />
         ))}
-
-        {/* Gradient Overlay */}
         <div className="absolute inset-0 z-0 bg-gradient-to-b from-black/50 to-black/70 pointer-events-none"></div>
 
         <div className="container mx-auto px-4 z-10 relative">
           <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-20">
-            
-            {/* Hero Text */}
             <div className="lg:w-1/2 text-white space-y-6 text-center lg:text-left">
               <div className="inline-block bg-primary-600/20 border border-primary-400/30 backdrop-blur-sm px-4 py-1 rounded-full text-primary-200 text-sm font-semibold tracking-wide uppercase">
                 Premium Cross-Border Service
@@ -226,7 +205,6 @@ const App: React.FC = () => {
               <p className="text-lg text-gray-200 max-w-xl mx-auto lg:mx-0">
                 Door-to-door private car charter. No need to alight at customs. Fixed prices, trusted Chinese-speaking drivers.
               </p>
-              
               <div className="flex flex-wrap gap-4 justify-center lg:justify-start">
                  <div className="flex items-center gap-2 bg-white/10 backdrop-blur-md px-4 py-2 rounded-lg border border-white/10">
                     <ShieldCheck className="text-primary-400" /> Safe & Secure
@@ -235,41 +213,21 @@ const App: React.FC = () => {
                     <Check className="text-primary-400" /> All-Inclusive
                  </div>
               </div>
-
-              {/* Social Media Links */}
               <div className="pt-6 flex items-center justify-center lg:justify-start gap-4">
                 <span className="text-white/80 text-sm font-medium">Follow us on:</span>
-                
-                {/* Facebook */}
-                <a 
-                  href="https://www.facebook.com/rftravel.transport" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="bg-[#1877F2] hover:bg-[#155db2] text-white px-4 py-2 rounded-full flex items-center gap-2 transition-transform hover:scale-105 shadow-lg"
-                >
-                  <Facebook size={18} fill="currentColor" />
-                  <span className="text-sm font-bold">Facebook</span>
+                <a href="https://www.facebook.com/rftravel.transport" target="_blank" rel="noopener noreferrer" className="bg-[#1877F2] hover:bg-[#155db2] text-white px-4 py-2 rounded-full flex items-center gap-2 transition-transform hover:scale-105 shadow-lg">
+                  <Facebook size={18} fill="currentColor" /> <span className="text-sm font-bold">Facebook</span>
                 </a>
-
-                {/* Xiaohongshu (Little Red Book) */}
-                <a 
-                  href="https://www.xiaohongshu.com/user/profile/63668abe000000001f01fa4b?xsec_token=AB-O3DJ-0VZk_bABXT94MmM16GvJIxz3dsLdbVufJZ2WM=&xsec_source=pc_search" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="bg-[#FF2442] hover:bg-[#d91f3a] text-white px-4 py-2 rounded-full flex items-center gap-2 transition-transform hover:scale-105 shadow-lg"
-                >
+                <a href="https://www.xiaohongshu.com/user/profile/63668abe000000001f01fa4b?xsec_token=AB-O3DJ-0VZk_bABXT94MmM16GvJIxz3dsLdbVufJZ2WM=&xsec_source=pc_search" target="_blank" rel="noopener noreferrer" className="bg-[#FF2442] hover:bg-[#d91f3a] text-white px-4 py-2 rounded-full flex items-center gap-2 transition-transform hover:scale-105 shadow-lg">
                   <span className="font-bold text-lg leading-none tracking-tight">小红书</span>
                 </a>
               </div>
             </div>
 
-            {/* Booking Form Container (Floating) */}
             <div id="booking" className="lg:w-1/2 w-full max-w-lg mx-auto lg:mr-0">
                <BookingForm prefillRoute={prefillRoute} />
-
-               {/* Help Text */}
                <div 
-                  onClick={handleWhatsAppFloat}
+                  onClick={handleWhatsAppContact}
                   className="mt-4 flex items-center justify-center gap-2 cursor-pointer hover:scale-[1.02] transition-transform group bg-white/10 backdrop-blur-md p-3 rounded-xl border border-white/20"
                >
                   <div className="bg-[#25D366] text-white p-1.5 rounded-full shadow-sm group-hover:bg-[#20bd5a] transition-colors">
@@ -291,7 +249,6 @@ const App: React.FC = () => {
             <h2 className="text-3xl font-bold text-gray-900 mb-4">Why Choose Us?</h2>
             <p className="text-gray-600">We make cross-border travel simple, comfortable, and affordable.</p>
           </div>
-
           <div className="grid md:grid-cols-3 gap-8">
             {[
               { icon: <ShieldCheck size={40} className="text-primary-600"/>, title: "Fixed Pricing", desc: "No hidden costs. Price includes toll fees, petrol, driver, and vehicle." },
@@ -328,7 +285,6 @@ const App: React.FC = () => {
             <h2 className="text-3xl font-bold text-gray-900 mb-4">Our Premium Fleet</h2>
             <p className="text-gray-600">Clean, well-maintained vehicles for every group size.</p>
           </div>
-          
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
             {VEHICLES.map((v) => (
               <div key={v.type} className="group rounded-xl overflow-hidden shadow-lg border border-gray-100 bg-white">
@@ -346,55 +302,29 @@ const App: React.FC = () => {
               </div>
             ))}
           </div>
-
           <div className="mt-8 text-center">
-             <p className="text-sm text-gray-500 italic">
-               Disclaimer: Vehicle images are for reference only. Actual vehicle models are subject to company arrangement.
-             </p>
+             <p className="text-sm text-gray-500 italic">Disclaimer: Vehicle images are for reference only. Actual vehicle models are subject to company arrangement.</p>
           </div>
         </div>
       </section>
 
-      {/* Testimonials (Smooth Marquee) */}
+      {/* Testimonials */}
       <section className="py-20 bg-slate-900 text-white overflow-hidden select-none">
         <div className="container mx-auto px-4">
           <div className="flex justify-between items-end mb-12">
              <h2 className="text-3xl md:text-4xl font-bold">What Our Customers Say</h2>
-             <div className="hidden md:flex gap-2">
-                 <span className="text-sm text-slate-400 flex items-center gap-1"><ChevronLeft size={16}/> Drag to Scroll <ChevronRight size={16}/></span>
-             </div>
+             <div className="hidden md:flex gap-2"><span className="text-sm text-slate-400 flex items-center gap-1"><ChevronLeft size={16}/> Drag to Scroll <ChevronRight size={16}/></span></div>
           </div>
-          
-          {/* Marquee Viewport */}
           <div 
              className="w-full overflow-hidden cursor-grab active:cursor-grabbing"
-             onMouseDown={handleDragStart}
-             onMouseMove={handleDragMove}
-             onMouseUp={handleDragEnd}
-             onMouseLeave={handleDragEnd}
-             onTouchStart={handleDragStart}
-             onTouchMove={handleDragMove}
-             onTouchEnd={handleDragEnd}
+             onMouseDown={handleDragStart} onMouseMove={handleDragMove} onMouseUp={handleDragEnd} onMouseLeave={handleDragEnd}
+             onTouchStart={handleDragStart} onTouchMove={handleDragMove} onTouchEnd={handleDragEnd}
           >
-             {/* Marquee Track */}
-             <div 
-                ref={trackRef}
-                className="flex gap-6 w-max will-change-transform"
-                style={{ transform: 'translate3d(0,0,0)' }} // Initial
-             >
+             <div ref={trackRef} className="flex gap-6 w-max will-change-transform" style={{ transform: 'translate3d(0,0,0)' }}>
                 {displayTestimonials.map((t: any, i) => (
-                  <div 
-                    key={i} 
-                    className="w-[240px] md:w-[320px] flex-shrink-0 transform transition-transform duration-300 hover:scale-[1.02]"
-                  >
+                  <div key={i} className="w-[240px] md:w-[320px] flex-shrink-0 transform transition-transform duration-300 hover:scale-[1.02]">
                     <div className="rounded-2xl overflow-hidden shadow-2xl border border-slate-700 bg-slate-800 h-full pointer-events-none">
-                      <img 
-                        src={t.image} 
-                        alt={`Customer Review ${i + 1}`} 
-                        className="w-full h-auto object-cover" 
-                        loading="lazy"
-                        draggable="false"
-                      />
+                      <img src={t.image} alt={`Customer Review ${i + 1}`} className="w-full h-auto object-cover" loading="lazy" draggable="false" />
                     </div>
                   </div>
                 ))}
@@ -418,15 +348,12 @@ const App: React.FC = () => {
          </div>
       </section>
 
-      {/* Footer */}
       <footer className="bg-slate-900 text-slate-300 py-12">
         <div className="container mx-auto px-4">
           <div className="grid md:grid-cols-4 gap-8 mb-8">
             <div className="col-span-1 md:col-span-2">
               <div className="text-2xl font-bold text-white mb-4">RF Charter Car<span className="text-primary-500"> & Travel Service</span></div>
-              <p className="max-w-xs text-sm leading-relaxed">
-                Professional private car charter service connecting Singapore and Malaysia. We prioritize safety, comfort, and punctuality.
-              </p>
+              <p className="max-w-xs text-sm leading-relaxed">Professional private car charter service connecting Singapore and Malaysia. We prioritize safety, comfort, and punctuality.</p>
             </div>
             <div>
               <h4 className="text-white font-bold mb-4">Quick Links</h4>
@@ -441,33 +368,21 @@ const App: React.FC = () => {
               <h4 className="text-white font-bold mb-4">Contact</h4>
               <ul className="space-y-2 text-sm">
                 <li className="flex items-center gap-2"><Phone size={16}/> +60 18-870 6966</li>
-                <li className="flex items-center gap-2 cursor-pointer hover:text-primary-400" onClick={handleWhatsAppFloat}><WhatsAppIcon size={16}/> WhatsApp Us</li>
+                <li className="flex items-center gap-2 cursor-pointer hover:text-primary-400" onClick={handleWhatsAppContact}><WhatsAppIcon size={16}/> WhatsApp Us</li>
                 <li className="flex gap-4 mt-4">
-                  <a href="https://www.facebook.com/rftravel.transport" target="_blank" rel="noopener noreferrer">
-                    <Facebook size={20} className="hover:text-primary-500 cursor-pointer" />
-                  </a>
-                  <a href="https://www.xiaohongshu.com/user/profile/63668abe000000001f01fa4b?xsec_token=AB-O3DJ-0VZk_bABXT94MmM16GvJIxz3dsLdbVufJZ2WM=&xsec_source=pc_search" target="_blank" rel="noopener noreferrer">
-                    <XiaohongshuIcon size={20} className="hover:text-primary-500 cursor-pointer" />
-                  </a>
+                  <a href="https://www.facebook.com/rftravel.transport" target="_blank" rel="noopener noreferrer"><Facebook size={20} className="hover:text-primary-500 cursor-pointer" /></a>
+                  <a href="https://www.xiaohongshu.com/user/profile/63668abe000000001f01fa4b?xsec_token=AB-O3DJ-0VZk_bABXT94MmM16GvJIxz3dsLdbVufJZ2WM=&xsec_source=pc_search" target="_blank" rel="noopener noreferrer"><XiaohongshuIcon size={20} className="hover:text-primary-500 cursor-pointer" /></a>
                 </li>
               </ul>
             </div>
           </div>
-          <div className="border-t border-slate-800 pt-8 text-center text-xs text-slate-500">
-            &copy; 2024 RF Charter Car & Travel Service. All rights reserved.
-          </div>
+          <div className="border-t border-slate-800 pt-8 text-center text-xs text-slate-500">&copy; 2024 RF Charter Car & Travel Service. All rights reserved.</div>
         </div>
       </footer>
 
-      {/* Sticky WhatsApp Button */}
-      <button 
-        onClick={handleWhatsAppFloat}
-        className="fixed bottom-6 right-6 z-50 bg-[#25D366] text-white p-4 rounded-full shadow-2xl hover:bg-[#128C7E] transition-all hover:scale-110 flex items-center justify-center"
-        aria-label="Contact via WhatsApp"
-      >
+      <button onClick={handleWhatsAppContact} className="fixed bottom-6 right-6 z-50 bg-[#25D366] text-white p-4 rounded-full shadow-2xl hover:bg-[#128C7E] transition-all hover:scale-110 flex items-center justify-center" aria-label="Contact via WhatsApp">
         <WhatsAppIcon size={32} />
       </button>
-
     </div>
   );
 };
