@@ -134,15 +134,7 @@ const App: React.FC = () => {
       (window as any).fbq('track', 'Contact');
     }
     
-    const msg = `
-Hi RF Travel, I’m interested in your Private Chauffeur & Transfer Service. 你好 RF Travel，我想咨询关于私人专车接送服务的详情。
-
-My Trip Details / 我的行程详情:
-Date / 日期: 
-Pickup / 出发地: 
-Destination / 目的地: 
-Pax / 人数: 
-    `.trim();
+    const msg = `Hi, I’m interested in your Charter Car Service form Website. 我想咨询关于包车服务的有关详情`.trim();
 
     window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`, '_blank');
   };

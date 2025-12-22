@@ -233,7 +233,7 @@ export const BookingForm: React.FC<{ prefillRoute?: { from: string, to: string }
 
     // 2. Open WhatsApp
     const returnDetails = state.tripType === 'round-trip' 
-        ? `\n*Return Trip:*\n*From:* ${state.returnFromLocation}\n*To:* ${state.returnToLocation}\n*Date:* ${state.returnDate} @ ${state.returnTime}`
+        ? `\n*Return Trip:* ${state.returnFromLocation} to ${state.returnToLocation} on ${state.returnDate} @ ${state.returnTime}`
         : '';
     let tripTypeDisplay = 'One Way';
     if (state.tripType === 'round-trip') tripTypeDisplay = 'Round Trip';
@@ -242,35 +242,26 @@ export const BookingForm: React.FC<{ prefillRoute?: { from: string, to: string }
     const totalPax = state.paxAdults + state.paxChildren;
     
     const luggageSummary = [
-      state.luggageLarge > 0 ? `${state.luggageLarge} Large (28")` : '',
-      state.luggageMedium > 0 ? `${state.luggageMedium} Med (24")` : '',
-      state.luggageSmall > 0 ? `${state.luggageSmall} Small (20")` : '',
-      state.luggageHandCarry > 0 ? `${state.luggageHandCarry} Hand Carry` : ''
+      state.luggageLarge > 0 ? `${state.luggageLarge} Large` : '',
+      state.luggageMedium > 0 ? `${state.luggageMedium} Med` : '',
+      state.luggageSmall > 0 ? `${state.luggageSmall} Small` : '',
+      state.luggageHandCarry > 0 ? `${state.luggageHandCarry} Hand` : ''
     ].filter(Boolean).join(', ') || 'None';
 
     const msg = `
-Hi RF Travel, I’m interested in your Private Chauffeur & Transfer Service. 你好 RF Travel，我想咨询关于私人专车接送服务的详情。
+Hi, I’m interested in your Charter Car Service form Website. 我想咨询关于包车服务的有关详情
 
-My Trip Details / 我的行程详情:
-Date / 日期: ${state.date} @ ${state.time}
-Pickup / 出发地: ${state.fromLocation}
-Destination / 目的地: ${state.toLocation}
-Pax / 人数: ${totalPax} (${state.paxAdults} Adt, ${state.paxChildren} Chd)
-
-Additional Info:
--------------------
-*Trip Type:* ${tripTypeDisplay}
-${returnDetails}
-
+*Trip:* ${state.fromLocation} to ${state.toLocation}
+*Date:* ${state.date} @ ${state.time}
+*Type:* ${tripTypeDisplay}${returnDetails}
+*Pax:* ${totalPax} (${state.paxAdults}A, ${state.paxChildren}C)
 *Vehicle:* ${state.selectedVehicle}
 *Luggage:* ${luggageSummary}
-
 *Est. Price:* ${priceDisplay}
-${priceInfo.tags.length > 0 ? `*Notes:* Includes ${priceInfo.tags.join(', ')}` : ''}
--------------------
-*Customer Name:* ${state.name}
-*Customer Phone:* ${state.phone}
-*Special Requests:* ${state.notes || 'None'}
+${priceInfo.tags.length > 0 ? `*Note:* ${priceInfo.tags.join(', ')}` : ''}
+*Name:* ${state.name}
+*Phone:* ${state.phone}
+*Notes:* ${state.notes || 'None'}
     `.trim();
 
     window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`, '_blank');
@@ -282,17 +273,14 @@ ${priceInfo.tags.length > 0 ? `*Notes:* Includes ${priceInfo.tags.join(', ')}` :
     const totalPax = state.paxAdults + state.paxChildren;
 
     const msg = `
-Hi RF Travel, I’m interested in your Private Chauffeur & Transfer Service. 你好 RF Travel，我想咨询关于私人专车接送服务的详情。
+Hi, I’m interested in your Charter Car Service form Website. 我想咨询关于包车服务的有关详情
 
-My Trip Details / 我的行程详情:
-Date / 日期: ${state.date || 'To be discussed'}
-Pickup / 出发地: ${state.fromLocation || 'Multiple Stops / Custom'}
-Destination / 目的地: ${state.toLocation || 'Multiple Stops / Custom'}
-Pax / 人数: ${totalPax || 'To be discussed'}
+*Pickup:* ${state.fromLocation || 'TBD'}
+*Destination:* ${state.toLocation || 'TBD'}
+*Date:* ${state.date || 'TBD'}
+*Pax:* ${totalPax || 'TBD'}
 
-Additional Info:
--------------------
-Hi, I have a multi-stop or complex itinerary (more than 2 trips). Please assist with a tailored quote for my specific travel needs.
+I have a multi-stop or complex itinerary. Please provide a tailored quote.
     `.trim();
     window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`, '_blank');
   };
