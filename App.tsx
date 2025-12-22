@@ -122,11 +122,16 @@ const App: React.FC = () => {
   };
 
   const handleWhatsAppContact = () => {
-    // Trigger Google Conversion tracking
+    // 1. Trigger Google Ads Conversion tracking
     if (typeof (window as any).gtag === 'function') {
       (window as any).gtag('event', 'conversion', {
         'send_to': 'AW-17810501351/ic3rCKj_w9QbEOfd2qxC'
       });
+    }
+
+    // 2. Trigger Meta Pixel Contact tracking
+    if (typeof (window as any).fbq === 'function') {
+      (window as any).fbq('track', 'Contact');
     }
     
     const msg = `
@@ -205,7 +210,7 @@ Pax / 人数:
               <p className="text-lg text-gray-200 max-w-xl mx-auto lg:mx-0">
                 Door-to-door private car charter. No need to alight at customs. Fixed prices, trusted Chinese-speaking drivers.
               </p>
-              <div className="flex flex-wrap gap-4 justify-center lg:justify-start">
+              <div className="flex items-center gap-4 justify-center lg:justify-start">
                  <div className="flex items-center gap-2 bg-white/10 backdrop-blur-md px-4 py-2 rounded-lg border border-white/10">
                     <ShieldCheck className="text-primary-400" /> Safe & Secure
                  </div>

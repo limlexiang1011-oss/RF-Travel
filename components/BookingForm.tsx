@@ -209,10 +209,15 @@ export const BookingForm: React.FC<{ prefillRoute?: { from: string, to: string }
   };
 
   const trackConversion = () => {
+    // 1. Google Ads conversion
     if (typeof (window as any).gtag === 'function') {
       (window as any).gtag('event', 'conversion', {
         'send_to': 'AW-17810501351/ic3rCKj_w9QbEOfd2qxC'
       });
+    }
+    // 2. Meta Pixel contact
+    if (typeof (window as any).fbq === 'function') {
+      (window as any).fbq('track', 'Contact');
     }
   };
 
@@ -220,7 +225,7 @@ export const BookingForm: React.FC<{ prefillRoute?: { from: string, to: string }
     const priceInfo = calculateTotal(state.selectedVehicle!);
     const priceDisplay = priceInfo.isQuote ? "Quote Required" : priceInfo.display;
 
-    // Track Ads Conversion
+    // Track Ads & Pixel Conversion
     trackConversion();
 
     // 1. Send Data to Google Sheet
@@ -272,7 +277,7 @@ ${priceInfo.tags.length > 0 ? `*Notes:* Includes ${priceInfo.tags.join(', ')}` :
   };
 
   const handleCustomQuoteClick = () => {
-    // Track Ads Conversion
+    // Track Ads & Pixel Conversion
     trackConversion();
     const totalPax = state.paxAdults + state.paxChildren;
 
