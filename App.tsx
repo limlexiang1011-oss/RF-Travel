@@ -231,17 +231,19 @@ Pax / 人数:
 
             <div id="booking" className="lg:w-1/2 w-full max-w-lg mx-auto lg:mr-0">
                <BookingForm prefillRoute={prefillRoute} />
-               <div 
+               <button 
+                  id="whatsapp-help-button"
+                  type="button"
                   onClick={handleWhatsAppContact}
-                  className="mt-4 flex items-center justify-center gap-2 cursor-pointer hover:scale-[1.02] transition-transform group bg-white/10 backdrop-blur-md p-3 rounded-xl border border-white/20"
+                  className="w-full mt-4 flex items-center justify-center gap-2 cursor-pointer hover:scale-[1.02] transition-transform group bg-white/10 backdrop-blur-md p-3 rounded-xl border border-white/20"
                >
                   <div className="bg-[#25D366] text-white p-1.5 rounded-full shadow-sm group-hover:bg-[#20bd5a] transition-colors">
                      <WhatsAppIcon size={20} />
                   </div>
-                  <span className="text-white font-medium text-sm drop-shadow-md">
+                  <span className="text-white font-medium text-sm drop-shadow-md text-left">
                     If you have any questions about the website or options, please click here to contact us.
                   </span>
-               </div>
+               </button>
             </div>
           </div>
         </div>
@@ -385,7 +387,13 @@ Pax / 人数:
         </div>
       </footer>
 
-      <button onClick={handleWhatsAppContact} className="fixed bottom-6 right-6 z-50 bg-[#25D366] text-white p-4 rounded-full shadow-2xl hover:bg-[#128C7E] transition-all hover:scale-110 flex items-center justify-center" aria-label="Contact via WhatsApp">
+      <button 
+        id="whatsapp-floating-button"
+        type="button"
+        onClick={handleWhatsAppContact} 
+        className="fixed bottom-6 right-6 z-50 bg-[#25D366] text-white p-4 rounded-full shadow-2xl hover:bg-[#128C7E] transition-all hover:scale-110 flex items-center justify-center" 
+        aria-label="Contact via WhatsApp"
+      >
         <WhatsAppIcon size={32} />
       </button>
     </div>
