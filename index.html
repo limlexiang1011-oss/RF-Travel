@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -38,7 +39,13 @@
     t.src=v;s=b.getElementsByTagName(e)[0];
     s.parentNode.insertBefore(t,s)}(window, document,'script',
     'https://connect.facebook.net/en_US/fbevents.js');
-    fbq('init', '839040708731770');
+    
+    // 初始化 Meta Pixel，并加入高级匹配数据
+    fbq('init', '839040708731770', {
+      em: 'email@email.com',   // 像素将自动使用 SHA-256 对这些值进行哈希处理
+      ph: '1234567890'
+    });
+    
     fbq('track', 'PageView');
     </script>
     <!-- End Meta Pixel Code -->
