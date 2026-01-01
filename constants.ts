@@ -175,36 +175,40 @@ export const PRICING_MATRIX: RoutePrice[] = [
       [VehicleType.VAN]: 200 * R
     }
   },
-  // SG -> Segamat / Mersing / Muar
-  // SGD: 180, 200, 220, 250
-  {
-    from: "Singapore",
-    to: "Segamat",
-    prices: {
-      [VehicleType.SEDAN]: 180 * R,
-      [VehicleType.MPV_STD]: 200 * R,
-      [VehicleType.MPV_LUX]: 220 * R,
-      [VehicleType.VAN]: 250 * R
-    }
-  },
+  // SG -> Mersing
+  // SGD: 170, 190, 210, 230
   {
     from: "Singapore",
     to: "Mersing",
     prices: {
-      [VehicleType.SEDAN]: 180 * R,
-      [VehicleType.MPV_STD]: 200 * R,
-      [VehicleType.MPV_LUX]: 220 * R,
-      [VehicleType.VAN]: 250 * R
+      [VehicleType.SEDAN]: 170 * R,
+      [VehicleType.MPV_STD]: 190 * R,
+      [VehicleType.MPV_LUX]: 210 * R,
+      [VehicleType.VAN]: 230 * R
     }
   },
+  // SG -> Muar
+  // SGD: 190, 210, 230, 250
   {
     from: "Singapore",
     to: "Muar",
     prices: {
-      [VehicleType.SEDAN]: 180 * R,
-      [VehicleType.MPV_STD]: 200 * R,
-      [VehicleType.MPV_LUX]: 220 * R,
+      [VehicleType.SEDAN]: 190 * R,
+      [VehicleType.MPV_STD]: 210 * R,
+      [VehicleType.MPV_LUX]: 230 * R,
       [VehicleType.VAN]: 250 * R
+    }
+  },
+  // SG -> Segamat
+  // SGD: 200, 220, 250, 270
+  {
+    from: "Singapore",
+    to: "Segamat",
+    prices: {
+      [VehicleType.SEDAN]: 200 * R,
+      [VehicleType.MPV_STD]: 220 * R,
+      [VehicleType.MPV_LUX]: 250 * R,
+      [VehicleType.VAN]: 270 * R
     }
   },
   // SG -> Malacca
@@ -366,6 +370,17 @@ export const PRICING_MATRIX: RoutePrice[] = [
       [VehicleType.MPV_STD]: 250,
       [VehicleType.MPV_LUX]: 300,
       [VehicleType.VAN]: 350
+    }
+  },
+  // KL -> Ipoh
+  {
+    from: "City Area",
+    to: "Ipoh",
+    prices: {
+      [VehicleType.SEDAN]: 500,
+      [VehicleType.MPV_STD]: 600,
+      [VehicleType.MPV_LUX]: 700,
+      [VehicleType.VAN]: 750
     }
   },
   // KL -> Cameron
