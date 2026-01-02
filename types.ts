@@ -1,4 +1,6 @@
 
+export type Language = 'en' | 'cn';
+
 export enum VehicleType {
   SEDAN = 'Sedan',
   MPV_STD = 'Standard MPV',

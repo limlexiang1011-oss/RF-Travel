@@ -3,7 +3,9 @@ import React, { useState, useEffect, useRef } from 'react';
 import { BookingForm } from './components/BookingForm';
 import { PriceTable } from './components/PriceTable';
 import { VEHICLES, TESTIMONIALS, FAQS, WHATSAPP_NUMBER } from './constants';
-import { Check, Star, ShieldCheck, Map, Phone, MessageCircle, Menu, X, Facebook, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Check, Star, ShieldCheck, Map, Phone, MessageCircle, Menu, X, Facebook, ChevronLeft, ChevronRight, Languages } from 'lucide-react';
+import { translations } from './translations';
+import { Language } from './types';
 
 const HERO_IMAGES = [
   "https://images.unsplash.com/photo-1596422846543-75c6fc197f07?q=80&w=2000&auto=format&fit=crop", // KL Twin Towers
@@ -25,24 +27,12 @@ const WhatsAppIcon = ({ size = 24, className = "" }: { size?: number, className?
   </svg>
 );
 
-const XiaohongshuIcon = ({ size = 24, className = "" }: { size?: number, className?: string }) => (
- <svg
-    width={size}
-    height={size}
-    viewBox="0 0 100 100"
-    fill="currentColor"
-    className={className}
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <rect x="5" y="5" width="90" height="90" rx="20" stroke="currentColor" strokeWidth="8" fill="none" />
-    <text x="50" y="70" fontSize="32" fontWeight="900" textAnchor="middle" fill="currentColor" fontFamily="sans-serif">小红书</text>
-  </svg>
-);
-
 const App: React.FC = () => {
+  const [lang, setLang] = useState<Language>('cn');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [prefillRoute, setPrefillRoute] = useState<{from: string, to: string} | undefined>(undefined);
   const [heroIndex, setHeroIndex] = useState(0);
+  const t = translations[lang];
 
   const trackRef = useRef<HTMLDivElement>(null);
   const animState = useRef({
@@ -122,20 +112,13 @@ const App: React.FC = () => {
   };
 
   const handleWhatsAppContact = () => {
-    // 1. Trigger Google Ads Conversion tracking
     if (typeof (window as any).gtag === 'function') {
-      (window as any).gtag('event', 'conversion', {
-        'send_to': 'AW-17810501351/ic3rCKj_w9QbEOfd2qxC'
-      });
+      (window as any).gtag('event', 'conversion', { 'send_to': 'AW-17810501351/ic3rCKj_w9QbEOfd2qxC' });
     }
-
-    // 2. Trigger Meta Pixel Contact tracking
     if (typeof (window as any).fbq === 'function') {
       (window as any).fbq('track', 'Contact');
     }
-    
     const msg = `Hi, I’m interested in your Charter Car Service form Website. 我想咨询关于包车服务的有关详情`.trim();
-
     window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`, '_blank');
   };
 
@@ -146,19 +129,35 @@ const App: React.FC = () => {
       <nav className="sticky top-0 z-50 bg-white/95 backdrop-blur-sm shadow-sm border-b border-gray-100">
         <div className="container mx-auto px-4 h-16 flex items-center justify-between">
           <div className="font-bold text-lg md:text-2xl text-primary-700 tracking-tight whitespace-nowrap overflow-hidden text-ellipsis">
-            RF Charter Car<span className="text-gray-800"> & Travel Service</span>
+            RF Travel<span className="text-gray-800"> & Charter Agency</span>
           </div>
           
           <div className="hidden md:flex gap-8 font-medium text-gray-600">
-            <button onClick={() => scrollToSection('home')} className="hover:text-primary-600 transition">Home</button>
-            <button onClick={() => scrollToSection('pricing')} className="hover:text-primary-600 transition">Rates</button>
-            <button onClick={() => scrollToSection('fleet')} className="hover:text-primary-600 transition">Fleet</button>
-            <button onClick={() => scrollToSection('faq')} className="hover:text-primary-600 transition">FAQ</button>
+            <button onClick={() => scrollToSection('home')} className="hover:text-primary-600 transition">{t.nav.home}</button>
+            <button onClick={() => scrollToSection('pricing')} className="hover:text-primary-600 transition">{t.nav.rates}</button>
+            <button onClick={() => scrollToSection('fleet')} className="hover:text-primary-600 transition">{t.nav.fleet}</button>
+            <button onClick={() => scrollToSection('faq')} className="hover:text-primary-600 transition">{t.nav.faq}</button>
           </div>
 
-          <div className="hidden md:block">
+          <div className="hidden md:flex items-center gap-4">
+            {/* Language Switcher */}
+            <div className="flex bg-gray-100 rounded-full p-1 border border-gray-200">
+              <button 
+                onClick={() => setLang('en')} 
+                className={`px-3 py-1 rounded-full text-xs font-bold transition-all ${lang === 'en' ? 'bg-primary-600 text-white shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
+              >
+                EN
+              </button>
+              <button 
+                onClick={() => setLang('cn')} 
+                className={`px-3 py-1 rounded-full text-xs font-bold transition-all ${lang === 'cn' ? 'bg-primary-600 text-white shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
+              >
+                中文
+              </button>
+            </div>
+            
             <button onClick={() => scrollToSection('booking')} className="bg-primary-600 text-white px-5 py-2 rounded-full font-semibold hover:bg-primary-700 transition shadow-md hover:shadow-lg">
-              Get Quote
+              {t.nav.getQuote}
             </button>
           </div>
 
@@ -169,10 +168,15 @@ const App: React.FC = () => {
 
         {mobileMenuOpen && (
           <div className="md:hidden bg-white border-t border-gray-100 p-4 space-y-4 shadow-lg animate-fadeIn">
-            <button onClick={() => scrollToSection('home')} className="block w-full text-left font-medium text-gray-700 py-2">Home</button>
-            <button onClick={() => scrollToSection('pricing')} className="block w-full text-left font-medium text-gray-700 py-2">Rates</button>
-            <button onClick={() => scrollToSection('fleet')} className="block w-full text-left font-medium text-gray-700 py-2">Fleet</button>
-            <button onClick={() => scrollToSection('booking')} className="block w-full text-center bg-primary-600 text-white font-bold py-3 rounded-lg">Book Now</button>
+            {/* Mobile Language Selection */}
+            <div className="flex gap-2 justify-center pb-2 border-b border-gray-50">
+               <button onClick={() => setLang('en')} className={`flex-1 py-2 rounded-lg font-bold border ${lang === 'en' ? 'bg-primary-600 text-white border-primary-600' : 'bg-gray-50 text-gray-600 border-gray-200'}`}>English</button>
+               <button onClick={() => setLang('cn')} className={`flex-1 py-2 rounded-lg font-bold border ${lang === 'cn' ? 'bg-primary-600 text-white border-primary-600' : 'bg-gray-50 text-gray-600 border-gray-200'}`}>简体中文</button>
+            </div>
+            <button onClick={() => scrollToSection('home')} className="block w-full text-left font-medium text-gray-700 py-2">{t.nav.home}</button>
+            <button onClick={() => scrollToSection('pricing')} className="block w-full text-left font-medium text-gray-700 py-2">{t.nav.rates}</button>
+            <button onClick={() => scrollToSection('fleet')} className="block w-full text-left font-medium text-gray-700 py-2">{t.nav.fleet}</button>
+            <button onClick={() => scrollToSection('booking')} className="block w-full text-center bg-primary-600 text-white font-bold py-3 rounded-lg">{t.nav.bookNow}</button>
           </div>
         )}
       </nav>
@@ -194,46 +198,52 @@ const App: React.FC = () => {
           <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-20">
             <div className="lg:w-1/2 text-white space-y-6 text-center lg:text-left">
               <div className="inline-block bg-primary-600/20 border border-primary-400/30 backdrop-blur-sm px-4 py-1 rounded-full text-primary-200 text-sm font-semibold tracking-wide uppercase">
-                Premium Cross-Border Service
+                {t.hero.badge}
               </div>
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight">
-                Charter Car in <span className="text-primary-400">Malaysia</span> with Ease.
+                {lang === 'en' ? (
+                  <>Charter Car in <span className="text-primary-400">Malaysia</span> with Ease.</>
+                ) : (
+                  <>轻松<span className="text-primary-400">游览</span>马来西亚</>
+                )}
               </h1>
               <p className="text-lg text-gray-200 max-w-xl mx-auto lg:mx-0">
-                Door-to-door private car charter. No need to alight at customs. Fixed prices, trusted Chinese-speaking drivers.
+                {t.hero.subtitle}
               </p>
               <div className="flex items-center gap-4 justify-center lg:justify-start">
                  <div className="flex items-center gap-2 bg-white/10 backdrop-blur-md px-4 py-2 rounded-lg border border-white/10">
-                    <ShieldCheck className="text-primary-400" /> Safe & Secure
+                    <ShieldCheck className="text-primary-400" /> {t.hero.safe}
                  </div>
                  <div className="flex items-center gap-2 bg-white/10 backdrop-blur-md px-4 py-2 rounded-lg border border-white/10">
-                    <Check className="text-primary-400" /> All-Inclusive
+                    <Check className="text-primary-400" /> {t.hero.allInclusive}
                  </div>
               </div>
-              <div className="pt-6 flex items-center justify-center lg:justify-start gap-4">
-                <span className="text-white/80 text-sm font-medium">Follow us on:</span>
-                <a href="https://www.facebook.com/rftravel.transport" target="_blank" rel="noopener noreferrer" className="bg-[#1877F2] hover:bg-[#155db2] text-white px-4 py-2 rounded-full flex items-center gap-2 transition-transform hover:scale-105 shadow-lg">
-                  <Facebook size={18} fill="currentColor" /> <span className="text-sm font-bold">Facebook</span>
-                </a>
-                <a href="https://www.xiaohongshu.com/user/profile/63668abe000000001f01fa4b?xsec_token=AB-O3DJ-0VZk_bABXT94MmM16GvJIxz3dsLdbVufJZ2WM=&xsec_source=pc_search" target="_blank" rel="noopener noreferrer" className="bg-[#FF2442] hover:bg-[#d91f3a] text-white px-4 py-2 rounded-full flex items-center gap-2 transition-transform hover:scale-105 shadow-lg">
-                  <span className="font-bold text-lg leading-none tracking-tight">小红书</span>
-                </a>
+              <div className="pt-6 flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
+                <span className="text-white/80 text-sm font-medium">{t.hero.follow}</span>
+                <div className="flex gap-4">
+                  <a href="https://www.facebook.com/rftravel.transport" target="_blank" rel="noopener noreferrer" className="bg-[#1877F2] hover:bg-[#155db2] text-white px-4 py-2 rounded-full flex items-center gap-2 transition-transform hover:scale-105 shadow-lg">
+                    <Facebook size={18} fill="currentColor" /> <span className="text-sm font-bold">Facebook</span>
+                  </a>
+                  <a href="https://www.xiaohongshu.com/user/profile/63668abe000000001f01fa4b?xsec_token=AB-O3DJ-0VZk_bABXT94MmM16GvJIxz3dsLdbVufJZ2WM=&xsec_source=pc_search" target="_blank" rel="noopener noreferrer" className="bg-[#FF2442] hover:bg-[#d91f3a] text-white px-4 py-2 rounded-full flex items-center gap-2 transition-transform hover:scale-105 shadow-lg">
+                    <span className="font-bold text-lg leading-none tracking-tight">{lang === 'en' ? 'Red' : '小红书'}</span>
+                  </a>
+                </div>
               </div>
             </div>
 
             <div id="booking" className="lg:w-1/2 w-full max-w-lg mx-auto lg:mr-0">
-               <BookingForm prefillRoute={prefillRoute} />
+               <BookingForm prefillRoute={prefillRoute} lang={lang} />
                <button 
                   id="whatsapp-help-button"
                   type="button"
                   onClick={handleWhatsAppContact}
                   className="w-full mt-4 flex items-center justify-center gap-2 cursor-pointer hover:scale-[1.02] transition-transform group bg-white/10 backdrop-blur-md p-3 rounded-xl border border-white/20"
                >
-                  <div className="bg-[#25D366] text-white p-1.5 rounded-full shadow-sm group-hover:bg-[#20bd5a] transition-colors">
+                  <div className="bg-[#25D366] text-white p-1.5 rounded-full shadow-sm group-hover:bg-[#20bd5a] transition-colors flex-shrink-0">
                      <WhatsAppIcon size={20} />
                   </div>
-                  <span className="text-white font-medium text-sm drop-shadow-md text-left">
-                    If you have any questions about the website or options, please click here to contact us.
+                  <span className="text-white font-medium text-xs md:text-sm drop-shadow-md text-left leading-snug">
+                    {t.booking.whatsappHelp}
                   </span>
                </button>
             </div>
@@ -245,14 +255,14 @@ const App: React.FC = () => {
       <section className="py-20 bg-white">
         <div className="container mx-auto px-4">
           <div className="text-center max-w-2xl mx-auto mb-16">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">Why Choose Us?</h2>
-            <p className="text-gray-600">We make cross-border travel simple, comfortable, and affordable.</p>
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">{t.features.title}</h2>
+            <p className="text-gray-600">{t.features.subtitle}</p>
           </div>
           <div className="grid md:grid-cols-3 gap-8">
             {[
-              { icon: <ShieldCheck size={40} className="text-primary-600"/>, title: "Fixed Pricing", desc: "No hidden costs. Price includes toll fees, petrol, driver, and vehicle." },
-              { icon: <Map size={40} className="text-primary-600"/>, title: "Door to Door", desc: "We pick you up from your doorstep and drop you exactly where you need to be." },
-              { icon: <Star size={40} className="text-primary-600"/>, title: "Customizable Trips", desc: "Every journey can be tailored to your needs—any destination, any requirement." },
+              { icon: <ShieldCheck size={40} className="text-primary-600"/>, title: t.features.f1_title, desc: t.features.f1_desc },
+              { icon: <Map size={40} className="text-primary-600"/>, title: t.features.f2_title, desc: t.features.f2_desc },
+              { icon: <Star size={40} className="text-primary-600"/>, title: t.features.f3_title, desc: t.features.f3_desc },
             ].map((f, i) => (
               <div key={i} className="p-8 rounded-2xl bg-slate-50 border border-slate-100 hover:shadow-lg transition text-center group">
                 <div className="inline-block p-4 bg-white rounded-full shadow-sm mb-6 group-hover:scale-110 transition-transform">{f.icon}</div>
@@ -268,11 +278,11 @@ const App: React.FC = () => {
       <section id="pricing" className="py-20 bg-gray-50">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">Transparent Pricing</h2>
-            <p className="text-gray-600">Popular routes and their starting rates.</p>
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">{t.pricing.title}</h2>
+            <p className="text-gray-600">{t.pricing.subtitle}</p>
           </div>
           <div className="max-w-4xl mx-auto">
-            <PriceTable onBook={handleQuickBook} />
+            <PriceTable onBook={handleQuickBook} lang={lang} />
           </div>
         </div>
       </section>
@@ -281,8 +291,8 @@ const App: React.FC = () => {
       <section id="fleet" className="py-20 bg-white">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">Our Premium Fleet</h2>
-            <p className="text-gray-600">Clean, well-maintained vehicles for every group size.</p>
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">{t.fleet.title}</h2>
+            <p className="text-gray-600">{t.fleet.subtitle}</p>
           </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
             {VEHICLES.map((v) => (
@@ -291,18 +301,20 @@ const App: React.FC = () => {
                   <img src={v.image} alt={v.type} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                 </div>
                 <div className="p-6">
-                  <h3 className="text-lg font-bold text-gray-900 mb-2">{v.type}</h3>
-                  <p className="text-sm text-gray-500 mb-4 h-10">{v.description}</p>
+                  <h3 className="text-lg font-bold text-gray-900 mb-2">{lang === 'en' ? v.type : (v.type === 'Sedan' ? '轿车' : v.type === 'Standard MPV' ? '标准MPV' : v.type === 'Luxury MPV' ? '豪华MPV' : '大型MPV')}</h3>
+                  <p className="text-sm text-gray-500 mb-4 h-12 leading-tight">
+                    {lang === 'en' ? v.description : (v.type === 'Sedan' ? '适合夫妻或行李较少的小家庭。舒适且经济。' : v.type === 'Standard MPV' ? '丰田 Innova 或 Perodua Aruz。适合家庭，行李空间更大。' : v.type === 'Luxury MPV' ? '丰田 Alphard / Vellfire。配备航空座椅和豪华配置。' : '大型多用途车，适合大型团队或带大量行李。')}
+                  </p>
                   <div className="flex justify-between text-sm text-gray-600 font-medium bg-gray-50 p-2 rounded-lg">
-                    <span>{v.paxLabel || `Max ${v.maxPax} Pax`}</span>
-                    <span>Max {v.maxLuggage} Bags</span>
+                    <span>{lang === 'en' ? (v.paxLabel || `Max ${v.maxPax} Pax`) : `最高 ${v.maxPax} 位乘客`}</span>
+                    <span>{lang === 'en' ? `Max ${v.maxLuggage} Bags` : `最多 ${v.maxLuggage} 件行李`}</span>
                   </div>
                 </div>
               </div>
             ))}
           </div>
           <div className="mt-8 text-center">
-             <p className="text-sm text-gray-500 italic">Disclaimer: Vehicle images are for reference only. Actual vehicle models are subject to company arrangement.</p>
+             <p className="text-sm text-gray-500 italic">{t.fleet.disclaimer}</p>
           </div>
         </div>
       </section>
@@ -311,8 +323,8 @@ const App: React.FC = () => {
       <section className="py-20 bg-slate-900 text-white overflow-hidden select-none">
         <div className="container mx-auto px-4">
           <div className="flex justify-between items-end mb-12">
-             <h2 className="text-3xl md:text-4xl font-bold">What Our Customers Say</h2>
-             <div className="hidden md:flex gap-2"><span className="text-sm text-slate-400 flex items-center gap-1"><ChevronLeft size={16}/> Drag to Scroll <ChevronRight size={16}/></span></div>
+             <h2 className="text-3xl md:text-4xl font-bold">{lang === 'en' ? 'What Our Customers Say' : '客户评价'}</h2>
+             <div className="hidden md:flex gap-2"><span className="text-sm text-slate-400 flex items-center gap-1"><ChevronLeft size={16}/> {lang === 'en' ? 'Drag to Scroll' : '左右滑动查看'} <ChevronRight size={16}/></span></div>
           </div>
           <div 
              className="w-full overflow-hidden cursor-grab active:cursor-grabbing"
@@ -335,9 +347,13 @@ const App: React.FC = () => {
       {/* FAQ Section */}
       <section id="faq" className="py-20 bg-gray-50">
          <div className="container mx-auto px-4 max-w-3xl">
-            <h2 className="text-3xl font-bold text-center mb-12">Frequently Asked Questions</h2>
+            <h2 className="text-3xl font-bold text-center mb-12">{t.faq.title}</h2>
             <div className="space-y-4">
-              {FAQS.map((faq, i) => (
+              {(lang === 'en' ? FAQS : [
+                { q: "价格包含过路费和油费吗？", a: "包含！我们的报价包含所有费用。这涵盖了车辆、司机、汽油以及所有路税/海关费用。没有任何隐藏费用。" },
+                { q: "在海关通关时我们需要下车吗？", a: "不需要。新加坡和马来西亚的海关检查，您只需坐在车内即可。我们走专用车道通关。" },
+                { q: "如何付款？", a: "我们接受 PayNow、银行转账或到达目的地后以现金形式支付给司机（马币或新币均可）。高峰期预订可能需要支付少量定金。" }
+              ]).map((faq, i) => (
                 <div key={i} className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
                   <h3 className="font-bold text-lg mb-2 text-gray-900">{faq.q}</h3>
                   <p className="text-gray-600">{faq.a}</p>
@@ -351,31 +367,31 @@ const App: React.FC = () => {
         <div className="container mx-auto px-4">
           <div className="grid md:grid-cols-4 gap-8 mb-8">
             <div className="col-span-1 md:col-span-2">
-              <div className="text-2xl font-bold text-white mb-4">RF Charter Car<span className="text-primary-500"> & Travel Service</span></div>
-              <p className="max-w-xs text-sm leading-relaxed">Professional private car charter service connecting Singapore and Malaysia. We prioritize safety, comfort, and punctuality.</p>
+              <div className="text-2xl font-bold text-white mb-4">RF Travel<span className="text-primary-500"> & Charter Agency</span></div>
+              <p className="max-w-xs text-sm leading-relaxed">{t.footer.desc}</p>
             </div>
             <div>
-              <h4 className="text-white font-bold mb-4">Quick Links</h4>
+              <h4 className="text-white font-bold mb-4">{t.footer.links}</h4>
               <ul className="space-y-2 text-sm">
-                <li><button onClick={() => scrollToSection('home')} className="hover:text-primary-400">Home</button></li>
-                <li><button onClick={() => scrollToSection('pricing')} className="hover:text-primary-400">Pricing</button></li>
-                <li><button onClick={() => scrollToSection('booking')} className="hover:text-primary-400">Book Now</button></li>
-                <li><button onClick={() => scrollToSection('faq')} className="hover:text-primary-400">Terms of Service</button></li>
+                <li><button onClick={() => scrollToSection('home')} className="hover:text-primary-400">{t.nav.home}</button></li>
+                <li><button onClick={() => scrollToSection('pricing')} className="hover:text-primary-400">{t.nav.rates}</button></li>
+                <li><button onClick={() => scrollToSection('booking')} className="hover:text-primary-400">{t.nav.bookNow}</button></li>
+                <li><button onClick={() => scrollToSection('faq')} className="hover:text-primary-400">{t.nav.faq}</button></li>
               </ul>
             </div>
             <div>
-              <h4 className="text-white font-bold mb-4">Contact</h4>
+              <h4 className="text-white font-bold mb-4">{t.footer.contact}</h4>
               <ul className="space-y-2 text-sm">
-                <li className="flex items-center gap-2"><Phone size={16}/> +60 18-870 6966</li>
-                <li className="flex items-center gap-2 cursor-pointer hover:text-primary-400" onClick={handleWhatsAppContact}><WhatsAppIcon size={16}/> WhatsApp Us</li>
+                <li className="flex items-center gap-2 font-mono"><Phone size={16}/> +60 18-870 6966</li>
+                <li className="flex items-center gap-2 cursor-pointer hover:text-primary-400" onClick={handleWhatsAppContact}><WhatsAppIcon size={16}/> {lang === 'en' ? 'WhatsApp Us' : '通过WhatsApp联系'}</li>
                 <li className="flex gap-4 mt-4">
                   <a href="https://www.facebook.com/rftravel.transport" target="_blank" rel="noopener noreferrer"><Facebook size={20} className="hover:text-primary-500 cursor-pointer" /></a>
-                  <a href="https://www.xiaohongshu.com/user/profile/63668abe000000001f01fa4b?xsec_token=AB-O3DJ-0VZk_bABXT94MmM16GvJIxz3dsLdbVufJZ2WM=&xsec_source=pc_search" target="_blank" rel="noopener noreferrer"><XiaohongshuIcon size={20} className="hover:text-primary-500 cursor-pointer" /></a>
+                  <a href="https://www.xiaohongshu.com/user/profile/63668abe000000001f01fa4b?xsec_token=AB-O3DJ-0VZk_bABXT94MmM16GvJIxz3dsLdbVufJZ2WM=&xsec_source=pc_search" target="_blank" rel="noopener noreferrer" className="hover:text-primary-500 cursor-pointer text-xs flex items-center bg-white/10 px-2 py-1 rounded-md font-bold">{lang === 'en' ? 'RED' : '小红书'}</a>
                 </li>
               </ul>
             </div>
           </div>
-          <div className="border-t border-slate-800 pt-8 text-center text-xs text-slate-500">&copy; 2024 RF Charter Car & Travel Service. All rights reserved.</div>
+          <div className="border-t border-slate-800 pt-8 text-center text-xs text-slate-500">{t.footer.copy}</div>
         </div>
       </footer>
 

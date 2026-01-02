@@ -48,9 +48,9 @@ export const VEHICLES: VehicleSpecs[] = [
   {
     type: VehicleType.SEDAN,
     maxPax: 4,
-    maxLuggage: 2, // 2 large
+    maxLuggage: 3, // Updated from 2 to 3
     paxLabel: "Max 4 Passenger",
-    description: "Ideal for couples or small families with light luggage. Comfortable and economical.",
+    description: "Ideal for couples or small families. Comfortable and economical.",
     image: "https://i.ibb.co/MkrMRGHP/4.png"
   },
   {
@@ -344,7 +344,7 @@ export const PRICING_MATRIX: RoutePrice[] = [
     from: "City Area", // Matches "Kuala Lumpur - City Area"
     to: "KLIA",
     prices: {
-      [VehicleType.SEDAN]: 100,
+      [VehicleType.SEDAN]: 120, // Updated from 100 to 120
       [VehicleType.MPV_STD]: 150,
       [VehicleType.MPV_LUX]: 200,
       [VehicleType.VAN]: 250

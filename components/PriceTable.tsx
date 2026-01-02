@@ -1,10 +1,12 @@
 
 import React, { useState } from 'react';
 import { PRICING_MATRIX } from '../constants';
-import { VehicleType } from '../types';
+import { VehicleType, Language } from '../types';
+import { translations } from '../translations';
 
-export const PriceTable: React.FC<{ onBook: (from: string, to: string) => void }> = ({ onBook }) => {
+export const PriceTable: React.FC<{ onBook: (from: string, to: string) => void, lang: Language }> = ({ onBook, lang }) => {
   const [activeTab, setActiveTab] = useState<'SG' | 'JB' | 'KL'>('SG');
+  const t = translations[lang].pricing;
 
   const filteredRoutes = PRICING_MATRIX.filter(r => {
     if (activeTab === 'SG') return r.from === 'Singapore';
@@ -22,7 +24,7 @@ export const PriceTable: React.FC<{ onBook: (from: string, to: string) => void }
             onClick={() => setActiveTab(tab)}
             className={`flex-1 py-4 text-center font-bold text-lg transition-colors ${activeTab === tab ? 'bg-primary-600 text-white' : 'bg-gray-50 text-gray-600 hover:bg-gray-100'}`}
           >
-            {tab === 'SG' ? 'Singapore' : tab === 'JB' ? 'Johor Bahru' : 'Kuala Lumpur'}
+            {tab === 'SG' ? (lang === 'en' ? 'Singapore' : '新加坡') : tab === 'JB' ? (lang === 'en' ? 'Johor Bahru' : '新山') : (lang === 'en' ? 'Kuala Lumpur' : '吉隆坡')}
           </button>
         ))}
       </div>
@@ -31,21 +33,21 @@ export const PriceTable: React.FC<{ onBook: (from: string, to: string) => void }
         <table className="w-full text-left border-collapse">
           <thead className="text-[10px] md:text-xs text-gray-700 uppercase bg-gray-50">
             <tr>
-              <th className="px-2 py-3 md:px-6 align-bottom">Dest.</th>
+              <th className="px-2 py-3 md:px-6 align-bottom">{t.dest}</th>
               <th className="px-1 py-2 md:px-6 md:py-3 text-left align-bottom min-w-[50px]">
-                <div className="leading-tight">Sedan<br/><span className="text-gray-400 normal-case">(4)</span></div>
+                <div className="leading-tight">{t.sedan}<br/><span className="text-gray-400 normal-case">(4)</span></div>
               </th>
               <th className="px-1 py-2 md:px-6 md:py-3 text-left align-bottom min-w-[50px]">
-                <div className="leading-tight">Standard<br/><span className="text-gray-400 normal-case">(6)</span></div>
+                <div className="leading-tight">{t.standard}<br/><span className="text-gray-400 normal-case">(6)</span></div>
               </th>
               <th className="px-1 py-2 md:px-6 md:py-3 text-left align-bottom min-w-[50px]">
-                 <div className="leading-tight">Luxury<br/><span className="text-gray-400 normal-case">(6-7)</span></div>
+                 <div className="leading-tight">{t.luxury}<br/><span className="text-gray-400 normal-case">(6-7)</span></div>
               </th>
               <th className="px-1 py-2 md:px-6 md:py-3 text-left align-bottom min-w-[50px]">
-                 <div className="leading-tight">Large<br/><span className="text-gray-400 normal-case">(10)</span></div>
+                 <div className="leading-tight">{t.large}<br/><span className="text-gray-400 normal-case">(10)</span></div>
               </th>
               <th className="px-1 py-2 md:px-6 md:py-3 text-center align-bottom">
-                 <span className="md:inline hidden">Action</span>
+                 <span className="md:inline hidden">{t.action}</span>
               </th>
             </tr>
           </thead>
@@ -65,22 +67,29 @@ export const PriceTable: React.FC<{ onBook: (from: string, to: string) => void }
                  );
               };
 
-              // Helper to display From location if it varies (specific for KL tab)
               const fromDisplay = activeTab === 'KL' && (route.from === 'KLIA' || route.from === 'City Area') 
-                ? <span className="text-[10px] text-gray-500 block font-normal leading-tight mt-1">from {route.from === 'City Area' ? 'City' : 'KLIA'}</span>
+                ? <span className="text-[10px] text-gray-500 block font-normal leading-tight mt-1">{t.from} {route.from === 'City Area' ? (lang === 'en' ? 'City' : '市区') : 'KLIA'}</span>
                 : null;
                 
-              // Format destination to split words for better mobile fit
               const formatDest = (dest: string) => {
-                  // Ensure (10 Hour) and (12 Hour) stay together on one line if possible
-                  const parts = dest.replace(/\((10|12) Hour\)/g, '|$&|').split('|').filter(Boolean);
+                  const translatedDest = lang === 'cn' ? (
+                      dest.includes('Changi') ? '樟宜机场' :
+                      dest.includes('City / Hotel') ? '市区 / 酒店' :
+                      dest.includes('Johor Bahru') ? '新山' :
+                      dest.includes('Legoland') ? '乐高乐园' :
+                      dest.includes('Genting') ? '云顶' :
+                      dest.includes('Malacca') ? '马六甲' :
+                      dest.includes('Penang') ? '槟城' :
+                      dest.includes('Tour') ? dest.replace('Tour', '一日游').replace('Hour', '小时') :
+                      dest
+                  ) : dest;
+
+                  const parts = translatedDest.replace(/\((10|12) Hour\)/g, '|$&|').replace(/\((10|12) 小时\)/g, '|$&|').split('|').filter(Boolean);
                   
                   return parts.map((part, i) => {
-                      // Check if this part is the time string
-                      if (part.includes('Hour')) {
+                      if (part.includes('Hour') || part.includes('小时')) {
                           return <span key={i} className="block whitespace-nowrap">{part.trim()}</span>;
                       }
-                      // Split other text by spaces
                       return part.trim().split(' ').map((word, wIdx) => (
                            <span key={`${i}-${wIdx}`} className="block">{word}</span>
                       ));
@@ -120,7 +129,7 @@ export const PriceTable: React.FC<{ onBook: (from: string, to: string) => void }
               );
             })}
             {filteredRoutes.length === 0 && (
-              <tr><td colSpan={6} className="text-center py-8 text-gray-500">No popular routes displayed. Use the booking form for a custom quote.</td></tr>
+              <tr><td colSpan={6} className="text-center py-8 text-gray-500">{t.noRoutes}</td></tr>
             )}
           </tbody>
         </table>
