@@ -351,7 +351,7 @@ const App: React.FC = () => {
             <div className="space-y-4">
               {(lang === 'en' ? FAQS : [
                 { q: "价格包含过路费和油费吗？", a: "包含！我们的报价包含所有费用。这涵盖了车辆、司机、汽油以及所有路税/海关费用。没有任何隐藏费用。" },
-                { q: "在海关通关时我们需要下车吗？", a: "不需要。新加坡和马来西亚的海关检查，您只需坐在车内即可。我们走专用车道通关。" },
+                { q: "行程可以临时调整或加点吗？", a: "可以的。在不影响整体时间与司机安全驾驶的情况下，行程可灵活调整或加点。我们会尽量配合您的实际需求，让行程更自由、不赶时间。" },
                 { q: "如何付款？", a: "我们接受 PayNow、银行转账或到达目的地后以现金形式支付给司机（马币或新币均可）。高峰期预订可能需要支付少量定金。" }
               ]).map((faq, i) => (
                 <div key={i} className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
@@ -382,7 +382,10 @@ const App: React.FC = () => {
             <div>
               <h4 className="text-white font-bold mb-4">{t.footer.contact}</h4>
               <ul className="space-y-2 text-sm">
-                <li className="flex items-center gap-2 font-mono"><Phone size={16}/> +60 18-870 6966</li>
+                <li className="flex items-center gap-2 font-mono">
+                  <Phone size={16}/> 
+                  <a href="tel:+60188706966" className="hover:text-primary-400 transition-colors">+60188706966</a>
+                </li>
                 <li className="flex items-center gap-2 cursor-pointer hover:text-primary-400" onClick={handleWhatsAppContact}><WhatsAppIcon size={16}/> {lang === 'en' ? 'WhatsApp Us' : '通过WhatsApp联系'}</li>
                 <li className="flex gap-4 mt-4">
                   <a href="https://www.facebook.com/rftravel.transport" target="_blank" rel="noopener noreferrer"><Facebook size={20} className="hover:text-primary-500 cursor-pointer" /></a>

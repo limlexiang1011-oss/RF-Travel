@@ -664,8 +664,8 @@ export const FAQS = [
     a: "Yes! Our prices are all-inclusive. This covers the vehicle, driver, petrol, and all toll charges/checkpoint fees. No hidden costs."
   },
   {
-    q: "Do we need to get off the car at customs?",
-    a: "No. You stay comfortably in the car for both Singapore and Malaysia immigration checkpoints. We handle the drive-through lane."
+    q: "Can the itinerary be adjusted or extended during the trip?",
+    a: "Yes. As long as it does not affect the overall schedule or driving safety, the itinerary can be adjusted or extended when needed. We always do our best to accommodate your requests, so your journey stays flexible, comfortable, and unhurried."
   },
   {
     q: "How do I pay?",

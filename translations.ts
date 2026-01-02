@@ -96,7 +96,7 @@ export const translations = {
       desc: "Professional private car charter service connecting Singapore and Malaysia. We prioritize safety, comfort, and punctuality.",
       links: "Quick Links",
       contact: "Contact",
-      copy: "© 2024 RF Charter Car & Travel Service. All rights reserved."
+      copy: "© RF Travel & Charter Agency. All rights reserved."
     }
   },
   cn: {
@@ -195,7 +195,7 @@ export const translations = {
       desc: "连接新加坡和马来西亚的专业私家包车服务。我们优先考虑安全、舒适和准时。",
       links: "快速链接",
       contact: "联系我们",
-      copy: "© 2024 RF Charter Car & Travel Service. 版权所有。"
+      copy: "© RF Travel & Charter Agency. 版权所有。"
     }
   }
 };
