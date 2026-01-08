@@ -1,8 +1,8 @@
 
 import React, { useState, useEffect, useMemo } from 'react';
 import { BookingState, VehicleType, Language } from '../types.ts';
-import { LOCATIONS, VEHICLES, PRICING_MATRIX, WHATSAPP_NUMBER, SURCHARGE_CONFIG, PEAK_DATES } from '../constants.ts';
-import { MapPin, Calendar, Clock, Users, Briefcase, CheckCircle, ChevronRight, ChevronLeft, ArrowRight, User, Phone, Edit3, ShoppingBag, Backpack, Baby, MessageCircle, ChevronDown } from 'lucide-react';
+import { LOCATIONS, VEHICLES, PRICING_MATRIX, WHATSAPP_NUMBER, SURCHARGE_CONFIG, PEAK_DATES, GOOGLE_SHEET_SCRIPT_URL } from '../constants.ts';
+import { MapPin, Calendar, Clock, Users, CheckCircle, ChevronLeft, ArrowRight, User, Phone, Baby, ChevronDown } from 'lucide-react';
 import { translations } from '../translations.ts';
 
 const EXCHANGE_RATE = 3.2;
@@ -140,14 +140,52 @@ export const BookingForm: React.FC<{ prefillRoute?: { from: string, to: string }
     });
   }, [state, lang]);
 
-  const handleWhatsAppClick = () => {
+  const handleWhatsAppClick = async () => {
     if (!state.selectedVehicle) return;
     const priceInfo = calculateTotal(state.selectedVehicle);
     const priceDisplay = priceInfo.isQuote ? "Quote Required" : priceInfo.display;
+
+    // --- Google Sheets Integration ---
+    if (GOOGLE_SHEET_SCRIPT_URL) {
+      try {
+        const formData = {
+          timestamp: new Date().toLocaleString(),
+          name: state.name,
+          phone: state.phone,
+          tripType: state.tripType,
+          from: state.fromLocation,
+          to: state.toLocation,
+          date: state.date,
+          time: state.time,
+          returnDate: state.returnDate || "",
+          returnTime: state.returnTime || "",
+          pax: state.paxAdults + state.paxChildren,
+          vehicle: state.selectedVehicle,
+          estimatedPrice: priceDisplay,
+          notes: state.notes
+        };
+
+        // Use fetch to send data to the Google Apps Script Web App
+        fetch(GOOGLE_SHEET_SCRIPT_URL, {
+          method: 'POST',
+          mode: 'no-cors', // Essential for Google Apps Script
+          cache: 'no-cache',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(formData),
+        }).catch(err => console.error("Error submitting to Google Sheets:", err));
+      } catch (e) {
+        console.warn("Failed to initiate Google Sheets submission", e);
+      }
+    }
+
+    // --- Analytics & WhatsApp ---
     try {
       if (typeof (window as any).gtag === 'function') (window as any).gtag('event', 'conversion', { 'send_to': 'AW-17810501351/ic3rCKj_w9QbEOfd2qxC' });
       if (typeof (window as any).fbq === 'function') (window as any).fbq('track', 'Contact');
     } catch (e) {}
+
     const returnDetails = state.tripType === 'round-trip' ? `\n*Return Trip:* ${state.returnFromLocation} to ${state.returnToLocation} on ${state.returnDate} @ ${state.returnTime}` : '';
     const totalPax = state.paxAdults + state.paxChildren;
     const luggageSummary = [state.luggageLarge > 0 ? `${state.luggageLarge} Large` : '', state.luggageMedium > 0 ? `${state.luggageMedium} Med` : '', state.luggageSmall > 0 ? `${state.luggageSmall} Small` : '', state.luggageHandCarry > 0 ? `${state.luggageHandCarry} Hand` : ''].filter(Boolean).join(', ') || 'None';
