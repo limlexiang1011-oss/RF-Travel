@@ -52,7 +52,9 @@ export const PriceTable: React.FC<{ onBook: (from: string, to: string) => void, 
               };
               return (
                 <tr key={idx} className="bg-white border-b hover:bg-gray-50">
-                  <td className="px-2 py-3 md:px-6 md:py-4 font-medium text-gray-900 align-middle truncate max-w-[100px] md:max-w-none">{route.to}</td>
+                  <td className="px-2 py-3 md:px-6 md:py-4 font-medium text-gray-900 align-middle truncate max-w-[100px] md:max-w-none">
+                    {route.labelTo || route.to}
+                  </td>
                   <td className="px-1 py-2 md:px-6 md:py-4 align-middle">{renderPrice(route.prices[VehicleType.SEDAN])}</td>
                   <td className="px-1 py-2 md:px-6 md:py-4 font-semibold align-middle">{renderPrice(route.prices[VehicleType.MPV_STD])}</td>
                   <td className="px-1 py-2 md:px-6 md:py-4 align-middle">{renderPrice(route.prices[VehicleType.MPV_LUX])}</td>

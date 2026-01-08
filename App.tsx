@@ -58,11 +58,16 @@ const App: React.FC = () => {
   const handleLanguageChange = (newLang: Language) => {
     setLang(newLang);
     try {
+      // Browsers strictly forbid pushState on blob URLs (common in preview environments)
+      if (window.location.protocol === 'blob:') return;
+
       const url = new URL(window.location.href);
       url.searchParams.set('lang', newLang);
-      window.history.pushState({}, '', url.toString());
+      // Use a relative search string to be safer across different hosting environments
+      window.history.pushState({}, '', '?' + url.searchParams.toString());
     } catch (e) {
-      console.error("Failed to update URL", e);
+      // Silently fail as the UI state (React state) is already updated correctly
+      console.debug("Navigation state update skipped", e);
     }
   };
 

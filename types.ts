@@ -11,6 +11,7 @@ export enum VehicleType {
 export interface RoutePrice {
   from: string;
   to: string;
+  labelTo?: string; // Optional custom display label for the destination
   prices: {
     [key in VehicleType]?: number;
   };

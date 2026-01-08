@@ -1,6 +1,5 @@
 
-import { RoutePrice, VehicleSpecs, VehicleType } from './types';
-import { Car, Truck, Crown, Bus } from 'lucide-react';
+import { RoutePrice, VehicleSpecs, VehicleType } from './types.ts';
 
 export const LOCATIONS = [
   "Singapore - Changi Airport",
@@ -30,6 +29,7 @@ export const LOCATIONS = [
   "Ipoh",
   "Setiawan",
   "Kampar",
+  "Taiping",
   "Penang"
 ];
 
@@ -301,16 +301,28 @@ export const PRICING_MATRIX: RoutePrice[] = [
       [VehicleType.VAN]: 580 * R
     }
   },
-  // SG -> Penang
+  // SG -> Taiping
   // SGD: 500, 550, 600, 600
   {
     from: "Singapore",
-    to: "Penang",
+    to: "Taiping",
     prices: {
       [VehicleType.SEDAN]: 500 * R,
       [VehicleType.MPV_STD]: 550 * R,
       [VehicleType.MPV_LUX]: 600 * R,
       [VehicleType.VAN]: 600 * R
+    }
+  },
+  // SG -> Penang
+  // SGD: 550, 600, 650, 650
+  {
+    from: "Singapore",
+    to: "Penang",
+    prices: {
+      [VehicleType.SEDAN]: 550 * R,
+      [VehicleType.MPV_STD]: 600 * R,
+      [VehicleType.MPV_LUX]: 650 * R,
+      [VehicleType.VAN]: 650 * R
     }
   },
 
@@ -354,6 +366,7 @@ export const PRICING_MATRIX: RoutePrice[] = [
   {
     from: "KLIA", // Matches "Kuala Lumpur - KLIA 1/2"
     to: "Genting",
+    labelTo: "Genting (From KLIA)",
     prices: {
       [VehicleType.SEDAN]: 250,
       [VehicleType.MPV_STD]: 300,
@@ -365,6 +378,7 @@ export const PRICING_MATRIX: RoutePrice[] = [
   {
     from: "City Area",
     to: "Genting",
+    labelTo: "Genting (From City Area)",
     prices: {
       [VehicleType.SEDAN]: 150,
       [VehicleType.MPV_STD]: 250,
@@ -635,12 +649,22 @@ export const PRICING_MATRIX: RoutePrice[] = [
   },
   {
     from: "Johor Bahru",
-    to: "Penang",
+    to: "Taiping",
     prices: {
       [VehicleType.SEDAN]: 1200,
       [VehicleType.MPV_STD]: 1400,
       [VehicleType.MPV_LUX]: 1600,
       [VehicleType.VAN]: 1700
+    }
+  },
+  {
+    from: "Johor Bahru",
+    to: "Penang",
+    prices: {
+      [VehicleType.SEDAN]: 1300,
+      [VehicleType.MPV_STD]: 1500,
+      [VehicleType.MPV_LUX]: 1700,
+      [VehicleType.VAN]: 1800
     }
   }
 ];
@@ -674,6 +698,4 @@ export const FAQS = [
 ];
 
 // --- GOOGLE SHEET INTEGRATION ---
-// IMPORTANT: You must deploy your Google Apps Script as a Web App and paste the URL here.
-// Example URL: "https://script.google.com/macros/s/AKfycbwEQZns-MtWNpl2LqzlIQCo8Hq-ca6JrhhYHDjJIPkVn4-3FqR2MxlLIvK6uqOT7ro/exec"
-export const GOOGLE_SHEET_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwEQZns-MtWNpl2LqzlIQCo8Hq-ca6JrhhYHDjJIPkVn4-3FqR2MxlLIvK6uqOT7ro/exec";
+export const GOOGLE_SHEET_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwUyG50MQLr4VQTHJzvBMmUGHrjsruHDXVHa0-NQaQLU2TJA1RLrIhxbQw3SSWsxSdQ/exec";

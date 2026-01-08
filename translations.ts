@@ -105,7 +105,7 @@ export const translations = {
       rates: "价格表",
       fleet: "车款选择",
       faq: "常见问题",
-      getQuote: "立即报价",
+      getQuote: "获取报价",
       bookNow: "立即预订"
     },
     hero: {
@@ -181,7 +181,7 @@ export const translations = {
       phone: "WhatsApp / 电话",
       requests: "特殊要求",
       notes: "备注...",
-      bookWa: "立即通过WhatsApp预订",
+      bookWa: "立刻通过WhatsApp了解更多",
       customQuote: "索取定制报价",
       edit: "修改详情",
       multiStopTitle: "多趟行程 / 定制行程？",

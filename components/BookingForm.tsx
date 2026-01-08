@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { BookingState, VehicleType, Language } from '../types.ts';
 import { LOCATIONS, VEHICLES, PRICING_MATRIX, WHATSAPP_NUMBER, SURCHARGE_CONFIG, PEAK_DATES, GOOGLE_SHEET_SCRIPT_URL } from '../constants.ts';
-import { MapPin, Calendar, Clock, Users, CheckCircle, ChevronLeft, ArrowRight, User, Phone, Baby, ChevronDown } from 'lucide-react';
+import { MapPin, Calendar, Clock, Users, CheckCircle, ChevronLeft, ArrowRight, User, Phone, Baby, ChevronDown, Briefcase, MessageCircle } from 'lucide-react';
 import { translations } from '../translations.ts';
 
 const EXCHANGE_RATE = 3.2;
@@ -17,10 +17,10 @@ const INITIAL_STATE: BookingState = {
   dayTripDuration: 10,
   paxAdults: 2,
   paxChildren: 0,
-  luggageLarge: 1,
-  luggageMedium: 1,
+  luggageLarge: 0,
+  luggageMedium: 0,
   luggageSmall: 0,
-  luggageHandCarry: 1,
+  luggageHandCarry: 0,
   selectedVehicle: null,
   name: '',
   phone: '',
@@ -106,10 +106,10 @@ export const BookingForm: React.FC<{ prefillRoute?: { from: string, to: string }
 
   const calculateTotal = (vehicleType: VehicleType) => {
     if (state.tripType === 'day-trip') {
-       return { display: lang === 'en' ? 'Contact for Quote' : '联系报价', isQuote: true, tags: [lang === 'en' ? `Day Trip (${state.dayTripDuration} Hours)` : `包车一日游 (${state.dayTripDuration}小时)`] };
+       return { display: lang === 'en' ? 'Contact for Quote' : '部分路线较少见，价格会为您单独计算', isQuote: true, tags: [lang === 'en' ? `Day Trip (${state.dayTripDuration} Hours)` : `包车一日游 (${state.dayTripDuration}小时)`] };
     }
     const outbound = getLegPrice(state.fromLocation, state.toLocation, state.date, state.time, vehicleType);
-    const quoteLabel = lang === 'en' ? 'Quote Required' : '需咨询报价';
+    const quoteLabel = lang === 'en' ? 'Quote Required' : '部分路线较少见，价格会为您单独计算';
     if (outbound.isQuoteRequired) return { display: quoteLabel, isQuote: true, tags: outbound.tags };
     let displayStr = '';
     let allTags = [...outbound.tags];
@@ -141,42 +141,42 @@ export const BookingForm: React.FC<{ prefillRoute?: { from: string, to: string }
   }, [state, lang]);
 
   const handleWhatsAppClick = async () => {
-    if (!state.selectedVehicle) return;
-    const priceInfo = calculateTotal(state.selectedVehicle);
+    const selectedVehicleType = state.selectedVehicle || VEHICLES[0].type;
+    const priceInfo = calculateTotal(selectedVehicleType);
     const priceDisplay = priceInfo.isQuote ? "Quote Required" : priceInfo.display;
 
     // --- Google Sheets Integration ---
     if (GOOGLE_SHEET_SCRIPT_URL) {
       try {
-        const formData = {
-          timestamp: new Date().toLocaleString(),
-          name: state.name,
-          phone: state.phone,
-          tripType: state.tripType,
-          from: state.fromLocation,
-          to: state.toLocation,
-          date: state.date,
-          time: state.time,
-          returnDate: state.returnDate || "",
-          returnTime: state.returnTime || "",
-          pax: state.paxAdults + state.paxChildren,
-          vehicle: state.selectedVehicle,
-          estimatedPrice: priceDisplay,
-          notes: state.notes
-        };
+        const pickupCombined = `${state.date} ${state.time}`;
+        const returnCombined = state.returnDate ? `${state.returnDate} ${state.returnTime || '12:00'}` : "";
 
-        // Use fetch to send data to the Google Apps Script Web App
+        const params = new URLSearchParams();
+        params.append("Timestamp", new Date().toLocaleString());
+        params.append("Name", String(state.name || "Anonymous"));
+        params.append("Phone", String(state.phone || "N/A"));
+        params.append("TripType", String(state.tripType));
+        params.append("From", String(state.fromLocation));
+        params.append("To", String(state.toLocation));
+        params.append("DateTime", String(pickupCombined)); 
+        params.append("ReturnFrom", String(state.returnFromLocation || ""));
+        params.append("ReturnTo", String(state.returnToLocation || ""));
+        params.append("ReturnDate", String(returnCombined)); 
+        params.append("Vehicle", String(selectedVehicleType));
+        params.append("Price", String(priceDisplay));
+        params.append("Pax", `${state.paxAdults} Adt, ${state.paxChildren} Chd`);
+        params.append("Luggage", `L:${state.luggageLarge}, M:${state.luggageMedium}, S:${state.luggageSmall}, H:${state.luggageHandCarry}`);
+        params.append("Notes", String(state.notes || ""));
+
         fetch(GOOGLE_SHEET_SCRIPT_URL, {
           method: 'POST',
-          mode: 'no-cors', // Essential for Google Apps Script
+          mode: 'no-cors',
           cache: 'no-cache',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(formData),
-        }).catch(err => console.error("Error submitting to Google Sheets:", err));
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: params.toString(),
+        }).catch(err => console.error("Sheets Error:", err));
       } catch (e) {
-        console.warn("Failed to initiate Google Sheets submission", e);
+        console.warn("Sheets init error:", e);
       }
     }
 
@@ -189,7 +189,7 @@ export const BookingForm: React.FC<{ prefillRoute?: { from: string, to: string }
     const returnDetails = state.tripType === 'round-trip' ? `\n*Return Trip:* ${state.returnFromLocation} to ${state.returnToLocation} on ${state.returnDate} @ ${state.returnTime}` : '';
     const totalPax = state.paxAdults + state.paxChildren;
     const luggageSummary = [state.luggageLarge > 0 ? `${state.luggageLarge} Large` : '', state.luggageMedium > 0 ? `${state.luggageMedium} Med` : '', state.luggageSmall > 0 ? `${state.luggageSmall} Small` : '', state.luggageHandCarry > 0 ? `${state.luggageHandCarry} Hand` : ''].filter(Boolean).join(', ') || 'None';
-    const msg = `Hi, I’m interested in your Charter Car Service form Website. 我想咨询关于包车服务的有关详情\n\n*Trip:* ${state.fromLocation} to ${state.toLocation}\n*Date:* ${state.date} @ ${state.time}\n*Type:* ${state.tripType}${returnDetails}\n*Pax:* ${totalPax}\n*Vehicle:* ${state.selectedVehicle}\n*Luggage:* ${luggageSummary}\n*Est. Price:* ${priceDisplay}\n*Name:* ${state.name}\n*Phone:* ${state.phone}\n*Notes:* ${state.notes || 'None'}`;
+    const msg = `Hi, I’m interested in your Charter Car Service form Website. 我想咨询关于包车服务的有关详情\n\n*Trip:* ${state.fromLocation} to ${state.toLocation}\n*Date:* ${state.date} @ ${state.time}\n*Type:* ${state.tripType}${returnDetails}\n*Pax:* ${totalPax}\n*Vehicle:* ${selectedVehicleType}\n*Luggage:* ${luggageSummary}\n*Est. Price:* ${priceDisplay}\n*Name:* ${state.name || 'N/A'}\n*Phone:* ${state.phone || 'N/A'}\n*Notes:* ${state.notes || 'None'}`;
     window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`, '_blank');
   };
 
@@ -223,18 +223,105 @@ export const BookingForm: React.FC<{ prefillRoute?: { from: string, to: string }
              {['one-way', 'round-trip', 'day-trip', 'custom'].map(type => (<label key={type} className="flex items-center gap-2 cursor-pointer"><input type="radio" checked={state.tripType === type} onChange={() => updateState('tripType', type)} className="w-5 h-5 text-primary-600"/><span className="font-medium text-gray-700">{t[type === 'one-way' ? 'oneWay' : type === 'round-trip' ? 'roundTrip' : type === 'day-trip' ? 'dayTrip' : 'multiStop']}</span></label>))}
           </div>
           {state.tripType === 'day-trip' && <div className="bg-orange-50 p-4 rounded-xl border border-orange-100"><div className="text-sm font-bold text-orange-800 mb-2 flex items-center gap-2"><Clock size={16}/> {t.duration}</div><div className="flex gap-4">{[10, 12].map(h => <button key={h} onClick={() => updateState('dayTripDuration', h)} className={`flex-1 py-3 rounded-lg border font-semibold ${state.dayTripDuration === h ? 'bg-orange-500 text-white border-orange-600 shadow-md' : 'bg-white text-gray-600 border-gray-200'}`}>{h} {t.hours}</button>)}</div></div>}
-          {state.tripType === 'round-trip' && <div className="space-y-4 bg-primary-50 p-4 rounded-xl border border-primary-100"><div className="grid grid-cols-1 md:grid-cols-2 gap-4"><div><label className="block text-sm font-medium text-gray-700 mb-1">{t.returnDate}</label><input type="date" className={inputBaseClass} value={state.returnDate || ''} onChange={(e) => updateState('returnDate', e.target.value)}/></div><div><label className="block text-sm font-medium text-gray-700 mb-1">{t.returnTime}</label><input type="time" className={inputBaseClass} value={state.returnTime || ''} onChange={(e) => updateState('returnTime', e.target.value)}/></div></div></div>}
+          {state.tripType === 'round-trip' && (
+            <div className="space-y-4 bg-primary-50 p-4 rounded-xl border border-primary-100">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">{t.returnPickup}</label>
+                  <div className="relative">
+                    <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 pointer-events-none z-10" />
+                    <select 
+                      className={selectClass} 
+                      value={state.returnFromLocation || ''} 
+                      onChange={(e) => updateState('returnFromLocation', e.target.value)}
+                    >
+                      <option value="">Select Origin</option>
+                      {LOCATIONS.map(l => <option key={l} value={l}>{l}</option>)}
+                    </select>
+                    <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 pointer-events-none z-10" />
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">{t.returnDest}</label>
+                  <div className="relative">
+                    <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 pointer-events-none z-10" />
+                    <select 
+                      className={selectClass} 
+                      value={state.returnToLocation || ''} 
+                      onChange={(e) => updateState('returnToLocation', e.target.value)}
+                    >
+                      <option value="">Select Destination</option>
+                      {LOCATIONS.map(l => <option key={l} value={l}>{l}</option>)}
+                    </select>
+                    <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 pointer-events-none z-10" />
+                  </div>
+                </div>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">{t.returnDate}</label>
+                  <input type="date" className={inputBaseClass} value={state.returnDate || ''} onChange={(e) => updateState('returnDate', e.target.value)}/>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">{t.returnTime}</label>
+                  <input type="time" className={inputBaseClass} value={state.returnTime || ''} onChange={(e) => updateState('returnTime', e.target.value)}/>
+                </div>
+              </div>
+            </div>
+          )}
           {state.tripType === 'custom' ? (<div className="bg-blue-50 p-6 rounded-xl text-center"><button onClick={handleCustomQuoteClick} className="w-full bg-[#25D366] text-white px-8 py-3 rounded-full font-bold shadow-lg">{t.customQuote}</button></div>) : (<div className="pt-4 flex justify-end"><button onClick={nextStep} disabled={!state.fromLocation || !state.toLocation || !state.date} className="bg-primary-600 text-white px-6 py-3 rounded-full font-semibold disabled:opacity-50">{t.next}</button></div>)}
         </div>
       )}
       {state.step === 2 && (
         <div className="space-y-6 animate-fadeIn">
           <h3 className="text-xl font-bold text-gray-800">{t.title2}</h3>
+          
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-            <div><label className="flex items-center text-sm font-medium text-gray-700 mb-2 gap-2"><Users size={16} /> {t.adults}</label><div className="flex items-center gap-3"><button onClick={() => updateState('paxAdults', Math.max(1, state.paxAdults - 1))} className="w-10 h-10 rounded-full border">-</button><span className="text-xl font-bold w-12 text-center">{state.paxAdults}</span><button onClick={() => updateState('paxAdults', state.paxAdults + 1)} className="w-10 h-10 rounded-full border">+</button></div></div>
-            <div><label className="flex items-center text-sm font-medium text-gray-700 mb-2 gap-2"><Baby size={16} /> {t.children}</label><div className="flex items-center gap-3"><button onClick={() => updateState('paxChildren', Math.max(0, state.paxChildren - 1))} className="w-10 h-10 rounded-full border">-</button><span className="text-xl font-bold w-12 text-center">{state.paxChildren}</span><button onClick={() => updateState('paxChildren', state.paxChildren + 1)} className="w-10 h-10 rounded-full border">+</button></div></div>
+            <div>
+              <label className="flex items-center text-sm font-medium text-gray-700 mb-2 gap-2"><Users size={16} /> {t.adults}</label>
+              <div className="flex items-center gap-3">
+                <button onClick={() => updateState('paxAdults', Math.max(1, state.paxAdults - 1))} className="w-10 h-10 rounded-full border border-gray-200 flex items-center justify-center hover:bg-gray-50">-</button>
+                <span className="text-xl font-bold w-12 text-center">{state.paxAdults}</span>
+                <button onClick={() => updateState('paxAdults', state.paxAdults + 1)} className="w-10 h-10 rounded-full border border-gray-200 flex items-center justify-center hover:bg-gray-50">+</button>
+              </div>
+            </div>
+            <div>
+              <label className="flex items-center text-sm font-medium text-gray-700 mb-2 gap-2"><Baby size={16} /> {t.children}</label>
+              <div className="flex items-center gap-3">
+                <button onClick={() => updateState('paxChildren', Math.max(0, state.paxChildren - 1))} className="w-10 h-10 rounded-full border border-gray-200 flex items-center justify-center hover:bg-gray-50">-</button>
+                <span className="text-xl font-bold w-12 text-center">{state.paxChildren}</span>
+                <button onClick={() => updateState('paxChildren', state.paxChildren + 1)} className="w-10 h-10 rounded-full border border-gray-200 flex items-center justify-center hover:bg-gray-50">+</button>
+              </div>
+            </div>
           </div>
-          <div className="pt-6 flex justify-between"><button onClick={prevStep} className="text-gray-600 font-medium flex items-center"><ChevronLeft size={18} /> {t.back}</button><button onClick={nextStep} className="bg-primary-600 text-white px-6 py-3 rounded-full font-semibold">{t.seeVehicles}</button></div>
+
+          <div className="border-t border-gray-100 pt-6">
+            <h4 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-4 flex items-center gap-2">
+              <Briefcase size={14} /> {lang === 'en' ? 'Luggage Count' : '行李数量'}
+            </h4>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+              {[
+                { key: 'luggageLarge', label: t.largeLug },
+                { key: 'luggageMedium', label: t.medLug },
+                { key: 'luggageSmall', label: t.smallLug },
+                { key: 'luggageHandCarry', label: t.handLug }
+              ].map((item) => (
+                <div key={item.key}>
+                  <label className="block text-xs text-gray-500 mb-2">{item.label}</label>
+                  <div className="flex items-center gap-3">
+                    <button onClick={() => updateState(item.key as any, Math.max(0, (state as any)[item.key] - 1))} className="w-8 h-8 rounded-full border border-gray-200 flex items-center justify-center hover:bg-gray-50 text-gray-500">-</button>
+                    <span className="text-lg font-bold w-8 text-center">{(state as any)[item.key]}</span>
+                    <button onClick={() => updateState(item.key as any, (state as any)[item.key] + 1)} className="w-8 h-8 rounded-full border border-gray-200 flex items-center justify-center hover:bg-gray-50 text-gray-500">+</button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="pt-6 flex justify-between">
+            <button onClick={prevStep} className="text-gray-600 font-medium flex items-center"><ChevronLeft size={18} /> {t.back}</button>
+            <button onClick={nextStep} className="bg-primary-600 text-white px-6 py-3 rounded-full font-semibold">{t.seeVehicles}</button>
+          </div>
         </div>
       )}
       {state.step === 3 && (
@@ -242,9 +329,28 @@ export const BookingForm: React.FC<{ prefillRoute?: { from: string, to: string }
           <h3 className="text-xl font-bold text-gray-800 mb-4">{t.title3}</h3>
           <div className="space-y-3 max-h-[400px] overflow-y-auto pr-2">
             {availableVehicles.map((vehicle) => (
-              <div key={vehicle.type} onClick={() => vehicle.isCapacityOk && updateState('selectedVehicle', vehicle.type)} className={`flex flex-col sm:flex-row items-center p-4 rounded-xl border-2 cursor-pointer ${state.selectedVehicle === vehicle.type ? 'border-primary-500 bg-primary-50' : 'border-gray-200'} ${!vehicle.isCapacityOk ? 'opacity-60 grayscale cursor-not-allowed bg-gray-50' : ''}`}>
+              <div key={vehicle.type} onClick={() => vehicle.isCapacityOk && updateState('selectedVehicle', vehicle.type)} className={`flex flex-col sm:flex-row items-center p-4 rounded-xl border-2 cursor-pointer transition-all ${state.selectedVehicle === vehicle.type ? 'border-primary-500 bg-primary-50' : 'border-gray-200'} ${!vehicle.isCapacityOk ? 'opacity-40 grayscale cursor-not-allowed bg-gray-50' : 'hover:border-primary-200'}`}>
                 <div className="w-24 h-16 bg-gray-200 rounded-lg overflow-hidden mb-3 sm:mb-0 flex-shrink-0"><img src={vehicle.image} alt={vehicle.type} className="w-full h-full object-cover" /></div>
-                <div className="flex-1 px-4 text-center sm:text-left"><h4 className="font-bold text-gray-900">{lang === 'en' ? vehicle.type : vehicle.type}</h4><p className="text-xs text-gray-500">{vehicle.priceInfo.display}</p></div>
+                <div className="flex-1 px-4 text-center sm:text-left">
+                   <h4 className="font-bold text-gray-900">{lang === 'en' ? vehicle.type : (vehicle.type === 'Sedan' ? '轿车' : vehicle.type === 'Standard MPV' ? '标准MPV' : vehicle.type === 'Luxury MPV' ? '豪华MPV' : '大型MPV')}</h4>
+                   <div className={`flex flex-col sm:flex-row items-center gap-2 ${vehicle.priceInfo.isQuote ? 'mt-1' : ''}`}>
+                      <p className="text-xs text-gray-500">{vehicle.priceInfo.display}</p>
+                      {vehicle.priceInfo.isQuote && (
+                        <button 
+                           onClick={(e) => { e.stopPropagation(); updateState('selectedVehicle', vehicle.type); handleWhatsAppClick(); }}
+                           className="flex items-center gap-1 px-2 py-0.5 bg-[#25D366] text-white rounded-full text-[10px] font-bold hover:bg-[#20bd5a] transition-all shadow-sm"
+                        >
+                           <MessageCircle size={10} /> {lang === 'en' ? 'Get Quote' : '咨询报价'}
+                        </button>
+                      )}
+                   </div>
+                   {vehicle.priceInfo.isQuote && (
+                     <p className="text-[9px] text-primary-600 mt-1 font-medium leading-tight">
+                       {lang === 'en' ? 'Welcome to contact us directly for a fast and accurate quote.' : '欢迎直接联系我们，快速给您准确报价'}
+                     </p>
+                   )}
+                   {!vehicle.isCapacityOk && <p className="text-[10px] text-red-500 mt-1 font-medium">{lang === 'en' ? 'Exceeds Capacity' : '人数或行李超限'}</p>}
+                </div>
                 {state.selectedVehicle === vehicle.type && <CheckCircle size={20} className="text-primary-600" />}
               </div>
             ))}
@@ -258,9 +364,9 @@ export const BookingForm: React.FC<{ prefillRoute?: { from: string, to: string }
           <div className="space-y-3">
              <div><label className="block text-sm font-medium text-gray-700 mb-1">{t.name}</label><div className="relative"><User className="absolute left-3 top-1/2 -translate-y-1/2 h-5 text-gray-400" /><input type="text" className={inputBaseClass} value={state.name} onChange={(e) => updateState('name', e.target.value)}/></div></div>
              <div><label className="block text-sm font-medium text-gray-700 mb-1">{t.phone}</label><div className="relative"><Phone className="absolute left-3 top-1/2 -translate-y-1/2 h-5 text-gray-400" /><input type="tel" className={inputBaseClass} value={state.phone} onChange={(e) => updateState('phone', e.target.value)}/></div></div>
-             <div><label className="block text-sm font-medium text-gray-700 mb-1">{t.requests}</label><textarea className="w-full p-3 border rounded-xl h-24" value={state.notes} onChange={(e) => updateState('notes', e.target.value)}/></div>
+             <div><label className="block text-sm font-medium text-gray-700 mb-1">{t.requests}</label><textarea className="w-full p-3 border rounded-xl h-24 text-sm" value={state.notes} onChange={(e) => updateState('notes', e.target.value)}/></div>
           </div>
-          <div className="pt-4"><button onClick={handleWhatsAppClick} disabled={!state.name || !state.phone} className="w-full bg-[#25D366] text-white px-6 py-4 rounded-xl font-bold flex items-center justify-center gap-2 shadow-lg"><span>{t.bookWa}</span><ArrowRight size={20} /></button></div>
+          <div className="pt-4"><button onClick={handleWhatsAppClick} disabled={!state.name || !state.phone} className="w-full bg-[#25D366] text-white px-6 py-4 rounded-xl font-bold flex items-center justify-center gap-2 shadow-lg hover:bg-[#20bd5a] transition-colors"><span>{t.bookWa}</span><ArrowRight size={20} /></button></div>
         </div>
       )}
     </div>
