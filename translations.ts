@@ -27,6 +27,19 @@ export const translations = {
       f3_title: "Customizable Trips",
       f3_desc: "Every journey can be tailored to your needs—any destination, any requirement."
     },
+    popular: {
+      title: "Popular Destinations",
+      subtitle: "Explore the most beautiful parts of Malaysia with comfort.",
+      d1_title: "Genting Highlands",
+      d1_desc: "Hilltop resort with entertainment, shopping, and food. Direct charter without transfers.",
+      d2_title: "Malacca",
+      d2_desc: "World Heritage city, perfect for 1-2 day trips. Flexible schedule, no rushing.",
+      d3_title: "Kuala Lumpur",
+      d3_desc: "Capital of Malaysia, hub for shopping and food. Point-to-point flexible charter.",
+      d4_title: "Penang",
+      d4_desc: "A city world-famous for its food. Century-old historical stories are hidden behind old streets and murals.",
+      bookAction: "Book Now"
+    },
     pricing: {
       title: "Transparent Pricing",
       subtitle: "Popular routes and their starting rates.",
@@ -136,6 +149,19 @@ export const translations = {
       f2_desc: "我们从您的家门口接您，并准时将您送到目的地。",
       f3_title: "行程定制",
       f3_desc: "每一段旅程都可以根据您的需求进行定制——任何目的地，任何要求。"
+    },
+    popular: {
+      title: "热门预定景点",
+      subtitle: "为您精选马来西亚最值得一游的热门目的地。",
+      d1_title: "云顶高原",
+      d1_desc: "高原度假胜地，集娱乐、购物与美食于一体。包车直达山上，无需转车更轻松。",
+      d2_title: "马六甲",
+      d2_desc: "世界文化遗产城市，适合一日或两天行程。包车自由安排行程，不赶时间。",
+      d3_title: "吉隆坡",
+      d3_desc: "马来西亚首都，购物、美食、景点集中。包车点到点接送，行程更灵活。",
+      d4_title: "槟城",
+      d4_desc: "因美食而闻名世界的城市，老街与壁画背后藏着百年历史故事",
+      bookAction: "立即预约"
     },
     pricing: {
       title: "透明的价格",

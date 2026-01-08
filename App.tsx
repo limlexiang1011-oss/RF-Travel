@@ -3,7 +3,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { BookingForm } from './components/BookingForm.tsx';
 import { PriceTable } from './components/PriceTable.tsx';
 import { VEHICLES, TESTIMONIALS, FAQS, WHATSAPP_NUMBER } from './constants.ts';
-import { Check, ShieldCheck, Map, Phone, Menu, X, Facebook, ChevronLeft, ChevronRight, Send, MessageCircle } from 'lucide-react';
+import { Check, ShieldCheck, Map, Phone, Menu, X, Facebook, ChevronLeft, ChevronRight, Send, MessageCircle, CalendarDays } from 'lucide-react';
 import { translations } from './translations.ts';
 import { Language } from './types.ts';
 
@@ -13,6 +13,13 @@ const HERO_IMAGES = [
   "https://i.ibb.co/mC1QN17V/3.png", // Genting
   "https://i.pinimg.com/1200x/0a/8b/30/0a8b30d52af52a239464cceae3369f78.jpg"  // Malacca
 ];
+
+const DESTINATION_IMAGES = {
+  genting: "https://i.ibb.co/mC1QN17V/3.png",
+  malacca: "https://i.pinimg.com/1200x/0a/8b/30/0a8b30d52af52a239464cceae3369f78.jpg",
+  kl: "https://images.unsplash.com/photo-1596422846543-75c6fc197f07?q=80&w=1200&auto=format&fit=crop",
+  penang: "https://i.ibb.co/FbRqC26F/Whats-App-Image-2026-01-08-at-5-33-37-PM.jpg"
+};
 
 const WhatsAppIcon = ({ size = 24, className = "" }: { size?: number, className?: string }) => (
   <svg 
@@ -240,6 +247,45 @@ const App: React.FC = () => {
           </div>
         </div>
       </section>
+
+      {/* Popular Destinations Section - Updated Layout */}
+      <section id="popular-destinations" className="py-20 bg-slate-50 border-t border-slate-100">
+        <div className="container mx-auto px-4">
+          <div className="text-center max-w-2xl mx-auto mb-10 md:mb-16">
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">{t.popular.title}</h2>
+            <p className="text-gray-600">{t.popular.subtitle}</p>
+          </div>
+          <div className="grid grid-cols-2 md:grid-cols-2 gap-3 md:gap-8">
+            {[
+              { id: 'genting', title: t.popular.d1_title, desc: t.popular.d1_desc, img: DESTINATION_IMAGES.genting, to: "Genting Highlands" },
+              { id: 'malacca', title: t.popular.d2_title, desc: t.popular.d2_desc, img: DESTINATION_IMAGES.malacca, to: "Malacca" },
+              { id: 'kl', title: t.popular.d3_title, desc: t.popular.d3_desc, img: DESTINATION_IMAGES.kl, to: "Kuala Lumpur - City Area" },
+              { id: 'penang', title: t.popular.d4_title, desc: t.popular.d4_desc, img: DESTINATION_IMAGES.penang, to: "Penang" },
+            ].map((dest, i) => (
+              <div key={i} className="group relative overflow-hidden rounded-2xl md:rounded-3xl bg-white shadow-md md:shadow-xl hover:shadow-2xl transition-all duration-500 flex flex-col h-full border border-gray-100">
+                <div className="w-full h-32 md:h-64 overflow-hidden relative">
+                  <img src={dest.img} alt={dest.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
+                </div>
+                <div className="p-3 md:p-8 flex flex-col flex-1">
+                  <h3 className="text-sm md:text-2xl font-bold text-gray-900 mb-1.5 md:mb-4 group-hover:text-primary-600 transition-colors">{dest.title}</h3>
+                  <p className="text-[10px] md:text-base text-gray-600 leading-snug md:leading-relaxed mb-3 md:mb-6 flex-1 line-clamp-3 md:line-clamp-none">
+                    {dest.desc}
+                  </p>
+                  <button 
+                    onClick={() => handleQuickBook("Singapore", dest.to)}
+                    className="w-full flex items-center justify-center gap-1 md:gap-2 bg-primary-600 text-white px-2 py-2 md:px-6 md:py-3 rounded-lg md:rounded-xl text-[10px] md:text-base font-bold hover:bg-primary-700 transition-colors shadow-sm md:shadow-md active:scale-95"
+                  >
+                    <CalendarDays className="w-3 h-3 md:w-5 md:h-5" />
+                    {t.popular.bookAction}
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       <section id="pricing" className="py-20 bg-gray-50">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
@@ -385,8 +431,10 @@ const App: React.FC = () => {
                  onClick={() => handleWhatsAppContact()}
                  className="w-full bg-[#25D366] text-white py-2.5 rounded-full font-bold text-sm flex items-center justify-center gap-2 shadow-sm hover:bg-[#20bd5a] transition-colors"
               >
-                 <Send size={14} />
-                 <span>{t.whatsappPopup.send}</span>
+                 <span className="text-white">
+                  <Send size={14} className="inline mr-2" />
+                  <span>{t.whatsappPopup.send}</span>
+                 </span>
               </button>
            </div>
         </div>
