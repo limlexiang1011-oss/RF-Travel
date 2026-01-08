@@ -6,6 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>RF Travel & Charter Agency | 专业新马跨境包车接送服务</title>
     
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="https://i.ibb.co/xt4MZL1F/Black-Gold-Elegant-Luxury-Real-Estate-Agency-Business-Card-Facebook.png" />
+    <link rel="apple-touch-icon" href="https://i.ibb.co/xt4MZL1F/Black-Gold-Elegant-Luxury-Real-Estate-Agency-Business-Card-Facebook.png" />
+
     <!-- Social Media Previews -->
     <meta name="description" content="RF Travel & Charter Agency 提供优质的新马跨境私人包车服务。华人司机全程接送，行程自由安排，无需下车过关。固定价格，透明无隐藏收费。" />
     
@@ -13,11 +17,13 @@
     <meta property="og:type" content="website" />
     <meta property="og:title" content="RF Travel & Charter Agency | 专业新马跨境包车接送" />
     <meta property="og:description" content="华人司机全程接送｜行程自由安排｜不用拖行李过关。立即预订您的专属旅程。" />
+    <meta property="og:image" content="https://i.ibb.co/xt4MZL1F/Black-Gold-Elegant-Luxury-Real-Estate-Agency-Business-Card-Facebook.png" />
     
     <!-- Twitter -->
     <meta name="twitter:card" content="summary" />
     <meta name="twitter:title" content="RF Travel & Charter Agency | 新马包车" />
-    <meta name="twitter:description" content="专业私人包车，连接新加坡与马来西亚。华人司机，上门接送。" />
+    <meta name="twitter:description" content="专业私人包车，连接新加坡与马来西亚. 华人司机，上门接送。" />
+    <meta name="twitter:image" content="https://i.ibb.co/xt4MZL1F/Black-Gold-Elegant-Luxury-Real-Estate-Agency-Business-Card-Facebook.png" />
 
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=AW-17810501351"></script>
@@ -40,15 +46,13 @@
     s.parentNode.insertBefore(t,s)}(window, document,'script',
     'https://connect.facebook.net/en_US/fbevents.js');
     
-    // 初始化 Meta Pixel，并加入高级匹配数据
     fbq('init', '839040708731770', {
-      em: 'email@email.com',   // 像素将自动使用 SHA-256 对这些值进行哈希处理
+      em: 'email@email.com',
       ph: '1234567890'
     });
     
     fbq('track', 'PageView');
     </script>
-    <!-- End Meta Pixel Code -->
 
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -63,11 +67,19 @@
               primary: {
                 50: '#f0fdfa',
                 100: '#ccfbf1',
-                500: '#14b8a6', // Teal
+                500: '#14b8a6',
                 600: '#0d9488',
                 700: '#0f766e',
                 900: '#134e4a',
               }
+            },
+            keyframes: {
+              fadeIn: { '0%': { opacity: '0' }, '100%': { opacity: '1' } },
+              slideUp: { '0%': { transform: 'translateY(20px)', opacity: '0' }, '100%': { transform: 'translateY(0)', opacity: '1' } }
+            },
+            animation: {
+              fadeIn: 'fadeIn 0.4s ease-out forwards',
+              slideUp: 'slideUp 0.4s ease-out forwards'
             }
           }
         }
@@ -75,6 +87,8 @@
     </script>
     <style>
       html { scroll-behavior: smooth; }
+      .scrollbar-hide::-webkit-scrollbar { display: none; }
+      .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
   <script type="importmap">
 {
@@ -89,11 +103,9 @@
 <link rel="stylesheet" href="/index.css">
 </head>
   <body class="bg-slate-50 text-slate-900 antialiased">
-    <!-- Meta Pixel Code (NoScript) - Placed in body to avoid build errors -->
     <noscript><img height="1" width="1" style="display:none"
     src="https://www.facebook.com/tr?id=839040708731770&ev=PageView&noscript=1"
     /></noscript>
-    <!-- End Meta Pixel Code (NoScript) -->
     <div id="root"></div>
   <script type="module" src="/index.tsx"></script>
 </body>

@@ -212,8 +212,8 @@ export const BookingForm: React.FC<{ prefillRoute?: { from: string, to: string }
         <div className="space-y-4 animate-fadeIn">
           <h3 className="text-xl font-bold text-gray-800 mb-4">{t.title1}</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div><label className="block text-sm font-medium text-gray-700 mb-1">{t.pickup}</label><div className="relative"><MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 pointer-events-none z-10" /><select className={selectClass} value={state.fromLocation} onChange={(e) => updateState('fromLocation', e.target.value)}><option value="">Select Origin</option>{LOCATIONS.map(l => <option key={l} value={l}>{l}</option>)}</select><ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 pointer-events-none z-10" /></div></div>
-            <div><label className="block text-sm font-medium text-gray-700 mb-1">{t.dest}</label><div className="relative"><MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 pointer-events-none z-10" /><select className={selectClass} value={state.toLocation} onChange={(e) => updateState('toLocation', e.target.value)}><option value="">Select Destination</option>{LOCATIONS.map(l => <option key={l} value={l}>{l}</option>)}</select><ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 pointer-events-none z-10" /></div></div>
+            <div><label className="block text-sm font-medium text-gray-700 mb-1">{t.pickup}</label><div className="relative"><MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 pointer-events-none z-10" /><select className={selectClass} value={state.fromLocation} onChange={(e) => updateState('fromLocation', e.target.value)}><option value="">{t.selectOrigin}</option>{LOCATIONS.map(l => <option key={l} value={l}>{l}</option>)}</select><ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 pointer-events-none z-10" /></div></div>
+            <div><label className="block text-sm font-medium text-gray-700 mb-1">{t.dest}</label><div className="relative"><MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 pointer-events-none z-10" /><select className={selectClass} value={state.toLocation} onChange={(e) => updateState('toLocation', e.target.value)}><option value="">{t.selectDest}</option>{LOCATIONS.map(l => <option key={l} value={l}>{l}</option>)}</select><ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 pointer-events-none z-10" /></div></div>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div><label className="block text-sm font-medium text-gray-700 mb-1">{t.date}</label><div className="relative"><Calendar className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 pointer-events-none z-10" /><input type="date" className={`${inputBaseClass} appearance-none`} value={state.date} onChange={(e) => updateState('date', e.target.value)}/></div></div>
@@ -235,7 +235,7 @@ export const BookingForm: React.FC<{ prefillRoute?: { from: string, to: string }
                       value={state.returnFromLocation || ''} 
                       onChange={(e) => updateState('returnFromLocation', e.target.value)}
                     >
-                      <option value="">Select Origin</option>
+                      <option value="">{t.selectOrigin}</option>
                       {LOCATIONS.map(l => <option key={l} value={l}>{l}</option>)}
                     </select>
                     <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 pointer-events-none z-10" />
@@ -250,7 +250,7 @@ export const BookingForm: React.FC<{ prefillRoute?: { from: string, to: string }
                       value={state.returnToLocation || ''} 
                       onChange={(e) => updateState('returnToLocation', e.target.value)}
                     >
-                      <option value="">Select Destination</option>
+                      <option value="">{t.selectDest}</option>
                       {LOCATIONS.map(l => <option key={l} value={l}>{l}</option>)}
                     </select>
                     <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 pointer-events-none z-10" />

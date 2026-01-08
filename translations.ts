@@ -51,6 +51,8 @@ export const translations = {
       title4: "Final Details",
       pickup: "Pick Up",
       dest: "Drop Off / Destination",
+      selectOrigin: "Select Origin",
+      selectDest: "Select Destination",
       date: "Date",
       time: "Time",
       oneWay: "One Way",
@@ -88,6 +90,15 @@ export const translations = {
       multiStopTitle: "Multiple Stops / Custom Itinerary?",
       multiStopDesc: "For itineraries with more than 2 trips, please contact us for a quote.",
       whatsappHelp: "If you have any questions about the website or options, please click here to contact us."
+    },
+    whatsappPopup: {
+      header: "Chat with RF Travel",
+      status: "Typically replies instantly",
+      intro: "Hi! How can we help you today?",
+      q1: "I'd like to know about charter pricing 👍",
+      q2: "Airport transfer service ✈️",
+      q3: "Full-day standby driver & tour ⭐",
+      send: "Send Message"
     },
     faq: {
       title: "Frequently Asked Questions"
@@ -150,6 +161,8 @@ export const translations = {
       title4: "最后确认",
       pickup: "出发地点",
       dest: "送达/目的地",
+      selectOrigin: "请选择出发地",
+      selectDest: "请选择目的地",
       date: "日期",
       time: "时间",
       oneWay: "单程",
@@ -188,11 +201,20 @@ export const translations = {
       multiStopDesc: "对于包含2次以上行程的路线，请联系我们获取详细报价。",
       whatsappHelp: "如果您对网站或选项有任何疑问，请点击此处联系我们。"
     },
+    whatsappPopup: {
+      header: "RF Travel 客服",
+      status: "通常会在 1 分钟内回复",
+      intro: "您好！请问有什么可以帮您的吗？",
+      q1: "我想要了解包车服务价格👍",
+      q2: "机场接送服务✈️",
+      q3: "司机全程待命+包车游⭐",
+      send: "发送咨询"
+    },
     faq: {
       title: "常见问题解答"
     },
     footer: {
-      desc: "连接新加坡和马来西亚的专业私家包车服务。我们优先考虑安全、舒适和准时。",
+      desc: "连接新加坡和马来西亚的专业私家包车服务。我们优先考虑安全、舒适 and 准时。",
       links: "快速链接",
       contact: "联系我们",
       copy: "© RF Travel & Charter Agency. 版权所有。"

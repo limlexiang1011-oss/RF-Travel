@@ -3,7 +3,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { BookingForm } from './components/BookingForm.tsx';
 import { PriceTable } from './components/PriceTable.tsx';
 import { VEHICLES, TESTIMONIALS, FAQS, WHATSAPP_NUMBER } from './constants.ts';
-import { Check, ShieldCheck, Map, Phone, Menu, X, Facebook, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Check, ShieldCheck, Map, Phone, Menu, X, Facebook, ChevronLeft, ChevronRight, Send, MessageCircle } from 'lucide-react';
 import { translations } from './translations.ts';
 import { Language } from './types.ts';
 
@@ -44,6 +44,7 @@ const App: React.FC = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [prefillRoute, setPrefillRoute] = useState<{from: string, to: string} | undefined>(undefined);
   const [heroIndex, setHeroIndex] = useState(0);
+  const [isWAPopupOpen, setIsWAPopupOpen] = useState(false);
   const t = translations[lang];
 
   const trackRef = useRef<HTMLDivElement>(null);
@@ -58,15 +59,11 @@ const App: React.FC = () => {
   const handleLanguageChange = (newLang: Language) => {
     setLang(newLang);
     try {
-      // Browsers strictly forbid pushState on blob URLs (common in preview environments)
       if (window.location.protocol === 'blob:') return;
-
       const url = new URL(window.location.href);
       url.searchParams.set('lang', newLang);
-      // Use a relative search string to be safer across different hosting environments
       window.history.pushState({}, '', '?' + url.searchParams.toString());
     } catch (e) {
-      // Silently fail as the UI state (React state) is already updated correctly
       console.debug("Navigation state update skipped", e);
     }
   };
@@ -138,7 +135,7 @@ const App: React.FC = () => {
     scrollToSection('booking');
   };
 
-  const handleWhatsAppContact = () => {
+  const handleWhatsAppContact = (customMsg?: string) => {
     try {
       if (typeof (window as any).gtag === 'function') {
         (window as any).gtag('event', 'conversion', { 'send_to': 'AW-17810501351/ic3rCKj_w9QbEOfd2qxC' });
@@ -149,8 +146,9 @@ const App: React.FC = () => {
     } catch (e) {
       console.warn("Tracking failed", e);
     }
-    const msg = `Hi, I’m interested in your Charter Car Service form Website. 我想咨询关于包车服务的有关详情`.trim();
-    window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`, '_blank');
+    const msg = customMsg || `Hi, I’m interested in your Charter Car Service form Website. 我想咨询关于包车服务的有关详情`;
+    window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg.trim())}`, '_blank');
+    setIsWAPopupOpen(false);
   };
 
   return (
@@ -213,7 +211,7 @@ const App: React.FC = () => {
             </div>
             <div id="booking" className="lg:w-1/2 w-full max-w-lg mx-auto lg:mr-0">
                <BookingForm prefillRoute={prefillRoute} lang={lang} />
-               <button id="whatsapp-help-button" type="button" onClick={handleWhatsAppContact} className="w-full mt-4 flex items-center justify-center gap-2 cursor-pointer hover:scale-[1.02] transition-transform group bg-white/10 backdrop-blur-md p-3 rounded-xl border border-white/20">
+               <button id="whatsapp-help-button" type="button" onClick={() => handleWhatsAppContact()} className="w-full mt-4 flex items-center justify-center gap-2 cursor-pointer hover:scale-[1.02] transition-transform group bg-white/10 backdrop-blur-md p-3 rounded-xl border border-white/20">
                   <div className="bg-[#25D366] text-white p-1.5 rounded-full shadow-sm group-hover:bg-[#20bd5a] transition-colors flex-shrink-0"><WhatsAppIcon size={20} /></div>
                   <span className="text-white font-medium text-xs md:text-sm drop-shadow-md text-left leading-snug">{t.booking.whatsappHelp}</span>
                </button>
@@ -331,7 +329,7 @@ const App: React.FC = () => {
               <h4 className="text-white font-bold mb-4">{t.footer.contact}</h4>
               <ul className="space-y-2 text-sm">
                 <li className="flex items-center gap-2 font-mono"><Phone size={16}/><a href="tel:+60188706966" className="hover:text-primary-400 transition-colors">+60188706966</a></li>
-                <li className="flex items-center gap-2 cursor-pointer hover:text-primary-400" onClick={handleWhatsAppContact}><WhatsAppIcon size={16}/> {lang === 'en' ? 'WhatsApp Us' : '通过WhatsApp联系'}</li>
+                <li className="flex items-center gap-2 cursor-pointer hover:text-primary-400" onClick={() => handleWhatsAppContact()}><WhatsAppIcon size={16}/> {lang === 'en' ? 'WhatsApp Us' : '通过WhatsApp联系'}</li>
                 <li className="flex gap-4 mt-4">
                   <a href="https://www.facebook.com/rftravel.transport" target="_blank" rel="noopener noreferrer"><Facebook size={20} className="hover:text-primary-500 cursor-pointer" /></a>
                   <a href="https://www.xiaohongshu.com/user/profile/63668abe000000001f01fa4b" target="_blank" rel="noopener noreferrer" className="hover:text-primary-500 cursor-pointer text-xs flex items-center bg-white/10 px-2 py-1 rounded-md font-bold">{lang === 'en' ? 'RED' : '小红书'}</a>
@@ -342,8 +340,73 @@ const App: React.FC = () => {
           <div className="border-t border-slate-800 pt-8 text-center text-xs text-slate-500">{t.footer.copy}</div>
         </div>
       </footer>
-      <button id="whatsapp-floating-button" type="button" onClick={handleWhatsAppContact} className="fixed bottom-6 right-6 z-50 bg-[#25D366] text-white p-4 rounded-full shadow-2xl hover:bg-[#128C7E] transition-all hover:scale-110 flex items-center justify-center" aria-label="Contact via WhatsApp">
-        <WhatsAppIcon size={32} />
+
+      {/* WhatsApp Chat Popup */}
+      {isWAPopupOpen && (
+        <div className="fixed bottom-24 right-6 z-[60] w-[320px] bg-white rounded-2xl shadow-2xl border border-gray-100 overflow-hidden animate-slideUp">
+           {/* Popup Header */}
+           <div className="bg-[#075e54] p-4 text-white flex items-center gap-3">
+              <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center">
+                 <WhatsAppIcon size={24} className="text-white" />
+              </div>
+              <div>
+                 <h4 className="font-bold text-sm leading-tight">{t.whatsappPopup.header}</h4>
+                 <p className="text-[10px] opacity-80">{t.whatsappPopup.status}</p>
+              </div>
+              <button onClick={() => setIsWAPopupOpen(false)} className="ml-auto opacity-70 hover:opacity-100 transition-opacity">
+                 <X size={18} />
+              </button>
+           </div>
+           
+           {/* Popup Content */}
+           <div className="p-4 bg-[#e5ddd5] min-h-[120px] relative">
+              <div className="bg-white p-3 rounded-lg rounded-tl-none shadow-sm inline-block max-w-[90%] relative mb-4">
+                 <p className="text-xs text-gray-800">{t.whatsappPopup.intro}</p>
+                 <span className="text-[9px] text-gray-400 block mt-1 text-right">{new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+              </div>
+
+              <div className="space-y-2 mt-2">
+                 {[t.whatsappPopup.q1, t.whatsappPopup.q2, t.whatsappPopup.q3].map((q, idx) => (
+                    <button 
+                       key={idx}
+                       onClick={() => handleWhatsAppContact(q)}
+                       className="w-full text-left bg-white/80 hover:bg-white p-2.5 rounded-lg border border-gray-200 text-xs font-medium text-primary-700 transition-all hover:shadow-md flex items-center gap-2 group"
+                    >
+                       <MessageCircle size={14} className="text-primary-500 group-hover:scale-110 transition-transform" />
+                       <span>{q}</span>
+                    </button>
+                 ))}
+              </div>
+           </div>
+
+           {/* Popup Footer */}
+           <div className="p-3 bg-white border-t border-gray-100">
+              <button 
+                 onClick={() => handleWhatsAppContact()}
+                 className="w-full bg-[#25D366] text-white py-2.5 rounded-full font-bold text-sm flex items-center justify-center gap-2 shadow-sm hover:bg-[#20bd5a] transition-colors"
+              >
+                 <Send size={14} />
+                 <span>{t.whatsappPopup.send}</span>
+              </button>
+           </div>
+        </div>
+      )}
+
+      {/* Floating Button */}
+      <button 
+        id="whatsapp-floating-button" 
+        type="button" 
+        onClick={() => setIsWAPopupOpen(!isWAPopupOpen)} 
+        className={`fixed bottom-6 right-6 z-50 p-4 rounded-full shadow-2xl transition-all hover:scale-110 flex items-center justify-center ${isWAPopupOpen ? 'bg-primary-600 text-white' : 'bg-[#25D366] text-white'}`} 
+        aria-label="Contact via WhatsApp"
+      >
+        {isWAPopupOpen ? <X size={32} /> : <WhatsAppIcon size={32} />}
+        {!isWAPopupOpen && (
+          <span className="absolute -top-1 -right-1 flex h-5 w-5">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#25D366] opacity-75"></span>
+            <span className="relative inline-flex rounded-full h-5 w-5 bg-red-500 border-2 border-white flex items-center justify-center text-[10px] font-bold">1</span>
+          </span>
+        )}
       </button>
     </div>
   );
