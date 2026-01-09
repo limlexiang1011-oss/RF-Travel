@@ -40,10 +40,26 @@ export const BookingForm: React.FC<{ prefillRoute?: { from: string, to: string }
 
   useEffect(() => {
     if (prefillRoute) {
+      let from = prefillRoute.from;
+      let to = prefillRoute.to;
+
+      // Map common shorthand names to full canonical location strings
+      if (from === "Singapore") from = "Singapore - City / Hotel";
+      if (from === "Johor Bahru") from = "Johor Bahru - City / JB Sentral";
+      if (from === "Kuala Lumpur" || from === "City Area") from = "Kuala Lumpur - City Area";
+      if (from === "KLIA") from = "Kuala Lumpur - KLIA 1/2";
+
+      if (to === "Singapore") to = "Singapore - City / Hotel";
+      if (to === "Johor Bahru") to = "Johor Bahru - City / JB Sentral";
+      if (to === "Kuala Lumpur" || to === "City Area") to = "Kuala Lumpur - City Area";
+      if (to === "KLIA") to = "Kuala Lumpur - KLIA 1/2";
+      if (to === "Genting") to = "Genting Highlands";
+      if (to === "Cameron") to = "Cameron Highlands";
+
       setState(prev => ({
         ...prev,
-        fromLocation: prefillRoute.from,
-        toLocation: prefillRoute.to,
+        fromLocation: from,
+        toLocation: to,
         step: 1
       }));
     }
@@ -81,7 +97,7 @@ export const BookingForm: React.FC<{ prefillRoute?: { from: string, to: string }
     }
     if (!route) {
         if ((from.includes('singapore') && to.includes('johor')) || (from.includes('johor') && to.includes('singapore'))) {
-             route = PRICING_MATRIX.find(r => r.from === "Singapore" && r.to === "Johor Bahru");
+             route = PRICING_MATRIX.find(r => r.from === "Singapore" && r.to.includes("Johor Bahru"));
         }
     }
     let basePrice = 0;

@@ -134,7 +134,16 @@ const App: React.FC = () => {
   const scrollToSection = (id: string) => {
     setMobileMenuOpen(false);
     const el = document.getElementById(id);
-    if (el) el.scrollIntoView({ behavior: 'smooth' });
+    if (el) {
+      const headerOffset = 80;
+      const elementPosition = el.getBoundingClientRect().top;
+      const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+      
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: 'smooth'
+      });
+    }
   };
 
   const handleQuickBook = (from: string, to: string) => {
@@ -268,7 +277,7 @@ const App: React.FC = () => {
                   <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
                 </div>
                 <div className="p-3 md:p-8 flex flex-col flex-1">
-                  <h3 className="text-sm md:text-2xl font-bold text-gray-900 mb-1.5 md:mb-4 group-hover:text-primary-600 transition-colors">{dest.title}</h3>
+                  <h3 className="text-lg md:text-2xl font-bold text-gray-900 mb-1.5 md:mb-4 group-hover:text-primary-600 transition-colors leading-tight">{dest.title}</h3>
                   <p className="text-[10px] md:text-base text-gray-600 leading-snug md:leading-relaxed mb-3 md:mb-6 flex-1 line-clamp-3 md:line-clamp-none">
                     {dest.desc}
                   </p>
@@ -418,8 +427,8 @@ const App: React.FC = () => {
                        onClick={() => handleWhatsAppContact(q)}
                        className="w-full text-left bg-white/80 hover:bg-white p-2.5 rounded-lg border border-gray-200 text-xs font-medium text-primary-700 transition-all hover:shadow-md flex items-center gap-2 group"
                     >
-                       <MessageCircle size={14} className="text-primary-500 group-hover:scale-110 transition-transform" />
-                       <span>{q}</span>
+                       <MessageCircle size={14} className="text-primary-500 group-hover:scale-110 transition-transform flex-shrink-0" />
+                       <span className="whitespace-pre-line leading-tight">{q}</span>
                     </button>
                  ))}
               </div>

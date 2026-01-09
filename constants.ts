@@ -111,7 +111,8 @@ export const PRICING_MATRIX: RoutePrice[] = [
   // SGD: 90, 100, 120, 120
   {
     from: "Singapore",
-    to: "Johor Bahru",
+    to: "Johor Bahru - City / JB Sentral",
+    labelTo: "Johor Bahru",
     prices: {
       [VehicleType.SEDAN]: 90 * R,
       [VehicleType.MPV_STD]: 100 * R,
@@ -135,7 +136,8 @@ export const PRICING_MATRIX: RoutePrice[] = [
   // SGD: 130, 160, 180, 180
   {
     from: "Singapore",
-    to: "Desaru",
+    to: "Johor Bahru - Desaru",
+    labelTo: "Desaru",
     prices: {
       [VehicleType.SEDAN]: 130 * R,
       [VehicleType.MPV_STD]: 160 * R,
@@ -179,7 +181,8 @@ export const PRICING_MATRIX: RoutePrice[] = [
   // SGD: 170, 190, 210, 230
   {
     from: "Singapore",
-    to: "Mersing",
+    to: "Johor Bahru - Mersing Jetty",
+    labelTo: "Mersing",
     prices: {
       [VehicleType.SEDAN]: 170 * R,
       [VehicleType.MPV_STD]: 190 * R,
@@ -237,7 +240,8 @@ export const PRICING_MATRIX: RoutePrice[] = [
   },
   {
     from: "Singapore",
-    to: "Kuala Lumpur",
+    to: "Kuala Lumpur - City Area",
+    labelTo: "Kuala Lumpur",
     prices: {
       [VehicleType.SEDAN]: 270 * R,
       [VehicleType.MPV_STD]: 300 * R,
@@ -249,7 +253,8 @@ export const PRICING_MATRIX: RoutePrice[] = [
   // SGD: 300, 350, 380, 380
   {
     from: "Singapore",
-    to: "Genting",
+    to: "Genting Highlands",
+    labelTo: "Genting",
     prices: {
       [VehicleType.SEDAN]: 300 * R,
       [VehicleType.MPV_STD]: 350 * R,
@@ -261,7 +266,8 @@ export const PRICING_MATRIX: RoutePrice[] = [
   // SGD: 400, 450, 550, 600
   {
     from: "Singapore",
-    to: "Cameron",
+    to: "Cameron Highlands",
+    labelTo: "Cameron",
     prices: {
       [VehicleType.SEDAN]: 400 * R,
       [VehicleType.MPV_STD]: 450 * R,
@@ -330,7 +336,7 @@ export const PRICING_MATRIX: RoutePrice[] = [
   
   // KL City Tour (10 Hour)
   {
-    from: "City Area",
+    from: "Kuala Lumpur - City Area",
     to: "Local Tour (10 Hour)",
     prices: {
       [VehicleType.SEDAN]: 650,
@@ -341,7 +347,7 @@ export const PRICING_MATRIX: RoutePrice[] = [
   },
   // KL City Tour (12 Hour)
   {
-    from: "City Area",
+    from: "Kuala Lumpur - City Area",
     to: "Local Tour (12 Hour)",
     prices: {
       [VehicleType.SEDAN]: 750,
@@ -353,10 +359,11 @@ export const PRICING_MATRIX: RoutePrice[] = [
 
   // KL -> KLIA
   {
-    from: "City Area", // Matches "Kuala Lumpur - City Area"
-    to: "KLIA",
+    from: "Kuala Lumpur - City Area", 
+    to: "Kuala Lumpur - KLIA 1/2",
+    labelTo: "KLIA",
     prices: {
-      [VehicleType.SEDAN]: 120, // Updated from 100 to 120
+      [VehicleType.SEDAN]: 120, 
       [VehicleType.MPV_STD]: 150,
       [VehicleType.MPV_LUX]: 200,
       [VehicleType.VAN]: 250
@@ -364,8 +371,8 @@ export const PRICING_MATRIX: RoutePrice[] = [
   },
   // KLIA -> Genting
   {
-    from: "KLIA", // Matches "Kuala Lumpur - KLIA 1/2"
-    to: "Genting",
+    from: "Kuala Lumpur - KLIA 1/2", 
+    to: "Genting Highlands",
     labelTo: "Genting (From KLIA)",
     prices: {
       [VehicleType.SEDAN]: 250,
@@ -376,8 +383,8 @@ export const PRICING_MATRIX: RoutePrice[] = [
   },
   // KL -> Genting
   {
-    from: "City Area",
-    to: "Genting",
+    from: "Kuala Lumpur - City Area",
+    to: "Genting Highlands",
     labelTo: "Genting (From City Area)",
     prices: {
       [VehicleType.SEDAN]: 150,
@@ -388,7 +395,7 @@ export const PRICING_MATRIX: RoutePrice[] = [
   },
   // KL -> Ipoh
   {
-    from: "City Area",
+    from: "Kuala Lumpur - City Area",
     to: "Ipoh",
     prices: {
       [VehicleType.SEDAN]: 500,
@@ -399,8 +406,9 @@ export const PRICING_MATRIX: RoutePrice[] = [
   },
   // KL -> Cameron
   {
-    from: "City Area",
-    to: "Cameron",
+    from: "Kuala Lumpur - City Area",
+    to: "Cameron Highlands",
+    labelTo: "Cameron",
     prices: {
       [VehicleType.SEDAN]: 600,
       [VehicleType.MPV_STD]: 750,
@@ -410,7 +418,7 @@ export const PRICING_MATRIX: RoutePrice[] = [
   },
   // KL -> Malacca
   {
-    from: "City Area",
+    from: "Kuala Lumpur - City Area",
     to: "Malacca",
     prices: {
       [VehicleType.SEDAN]: 300,
@@ -421,7 +429,7 @@ export const PRICING_MATRIX: RoutePrice[] = [
   },
   // KL -> Penang
   {
-    from: "City Area",
+    from: "Kuala Lumpur - City Area",
     to: "Penang",
     prices: {
       [VehicleType.SEDAN]: 550,
@@ -432,8 +440,9 @@ export const PRICING_MATRIX: RoutePrice[] = [
   },
   // KL -> Johor Bahru
   {
-    from: "City Area",
-    to: "Johor Bahru",
+    from: "Kuala Lumpur - City Area",
+    to: "Johor Bahru - City / JB Sentral",
+    labelTo: "Johor Bahru",
     prices: {
       [VehicleType.SEDAN]: 550,
       [VehicleType.MPV_STD]: 650,
@@ -446,7 +455,7 @@ export const PRICING_MATRIX: RoutePrice[] = [
   
   // JB City Tour (10 Hour)
   {
-    from: "Johor Bahru",
+    from: "Johor Bahru - City / JB Sentral",
     to: "Local Tour (10 Hour)",
     prices: {
       [VehicleType.SEDAN]: 650,
@@ -457,7 +466,7 @@ export const PRICING_MATRIX: RoutePrice[] = [
   },
   // JB City Tour (12 Hour)
   {
-    from: "Johor Bahru",
+    from: "Johor Bahru - City / JB Sentral",
     to: "Local Tour (12 Hour)",
     prices: {
       [VehicleType.SEDAN]: 750,
@@ -468,8 +477,9 @@ export const PRICING_MATRIX: RoutePrice[] = [
   },
 
   {
-    from: "Johor Bahru",
-    to: "Johor Bahru", // JB Local - Moved to Top
+    from: "Johor Bahru - City / JB Sentral",
+    to: "Johor Bahru - City / JB Sentral", 
+    labelTo: "JB Local",
     prices: {
       [VehicleType.SEDAN]: 50,
       [VehicleType.MPV_STD]: 80,
@@ -478,7 +488,7 @@ export const PRICING_MATRIX: RoutePrice[] = [
     }
   },
   {
-    from: "Johor Bahru",
+    from: "Johor Bahru - City / JB Sentral",
     to: "Kota Tinggi",
     prices: {
       [VehicleType.SEDAN]: 150,
@@ -488,8 +498,9 @@ export const PRICING_MATRIX: RoutePrice[] = [
     }
   },
   {
-    from: "Johor Bahru",
-    to: "Desaru",
+    from: "Johor Bahru - City / JB Sentral",
+    to: "Johor Bahru - Desaru",
+    labelTo: "Desaru",
     prices: {
       [VehicleType.SEDAN]: 250,
       [VehicleType.MPV_STD]: 350,
@@ -498,7 +509,7 @@ export const PRICING_MATRIX: RoutePrice[] = [
     }
   },
   {
-    from: "Johor Bahru",
+    from: "Johor Bahru - City / JB Sentral",
     to: "Kluang",
     prices: {
       [VehicleType.SEDAN]: 400,
@@ -508,7 +519,7 @@ export const PRICING_MATRIX: RoutePrice[] = [
     }
   },
   {
-    from: "Johor Bahru",
+    from: "Johor Bahru - City / JB Sentral",
     to: "Batu Pahat",
     prices: {
       [VehicleType.SEDAN]: 400,
@@ -518,7 +529,7 @@ export const PRICING_MATRIX: RoutePrice[] = [
     }
   },
   {
-    from: "Johor Bahru",
+    from: "Johor Bahru - City / JB Sentral",
     to: "Yong Peng",
     prices: {
       [VehicleType.SEDAN]: 400,
@@ -528,7 +539,7 @@ export const PRICING_MATRIX: RoutePrice[] = [
     }
   },
   {
-    from: "Johor Bahru",
+    from: "Johor Bahru - City / JB Sentral",
     to: "Segamat",
     prices: {
       [VehicleType.SEDAN]: 450,
@@ -538,8 +549,9 @@ export const PRICING_MATRIX: RoutePrice[] = [
     }
   },
   {
-    from: "Johor Bahru",
-    to: "Mersing",
+    from: "Johor Bahru - City / JB Sentral",
+    to: "Johor Bahru - Mersing Jetty",
+    labelTo: "Mersing",
     prices: {
       [VehicleType.SEDAN]: 450,
       [VehicleType.MPV_STD]: 500,
@@ -548,7 +560,7 @@ export const PRICING_MATRIX: RoutePrice[] = [
     }
   },
   {
-    from: "Johor Bahru",
+    from: "Johor Bahru - City / JB Sentral",
     to: "Muar",
     prices: {
       [VehicleType.SEDAN]: 450,
@@ -558,7 +570,7 @@ export const PRICING_MATRIX: RoutePrice[] = [
     }
   },
   {
-    from: "Johor Bahru",
+    from: "Johor Bahru - City / JB Sentral",
     to: "Malacca",
     prices: {
       [VehicleType.SEDAN]: 500,
@@ -568,8 +580,9 @@ export const PRICING_MATRIX: RoutePrice[] = [
     }
   },
   {
-    from: "Johor Bahru",
-    to: "KLIA",
+    from: "Johor Bahru - City / JB Sentral",
+    to: "Kuala Lumpur - KLIA 1/2",
+    labelTo: "KLIA",
     prices: {
       [VehicleType.SEDAN]: 550,
       [VehicleType.MPV_STD]: 650,
@@ -578,7 +591,7 @@ export const PRICING_MATRIX: RoutePrice[] = [
     }
   },
   {
-    from: "Johor Bahru",
+    from: "Johor Bahru - City / JB Sentral",
     to: "Seremban",
     prices: {
       [VehicleType.SEDAN]: 600,
@@ -588,8 +601,9 @@ export const PRICING_MATRIX: RoutePrice[] = [
     }
   },
   {
-    from: "Johor Bahru",
-    to: "Kuala Lumpur",
+    from: "Johor Bahru - City / JB Sentral",
+    to: "Kuala Lumpur - City Area",
+    labelTo: "Kuala Lumpur",
     prices: {
       [VehicleType.SEDAN]: 600,
       [VehicleType.MPV_STD]: 700,
@@ -598,8 +612,9 @@ export const PRICING_MATRIX: RoutePrice[] = [
     }
   },
   {
-    from: "Johor Bahru",
-    to: "Genting",
+    from: "Johor Bahru - City / JB Sentral",
+    to: "Genting Highlands",
+    labelTo: "Genting",
     prices: {
       [VehicleType.SEDAN]: 850,
       [VehicleType.MPV_STD]: 950,
@@ -608,8 +623,9 @@ export const PRICING_MATRIX: RoutePrice[] = [
     }
   },
   {
-    from: "Johor Bahru",
-    to: "Cameron",
+    from: "Johor Bahru - City / JB Sentral",
+    to: "Cameron Highlands",
+    labelTo: "Cameron",
     prices: {
       [VehicleType.SEDAN]: 1000,
       [VehicleType.MPV_STD]: 1200,
@@ -618,7 +634,7 @@ export const PRICING_MATRIX: RoutePrice[] = [
     }
   },
   {
-    from: "Johor Bahru",
+    from: "Johor Bahru - City / JB Sentral",
     to: "Setiawan",
     prices: {
       [VehicleType.SEDAN]: 1100,
@@ -628,7 +644,7 @@ export const PRICING_MATRIX: RoutePrice[] = [
     }
   },
   {
-    from: "Johor Bahru",
+    from: "Johor Bahru - City / JB Sentral",
     to: "Kampar",
     prices: {
       [VehicleType.SEDAN]: 1100,
@@ -638,7 +654,7 @@ export const PRICING_MATRIX: RoutePrice[] = [
     }
   },
   {
-    from: "Johor Bahru",
+    from: "Johor Bahru - City / JB Sentral",
     to: "Ipoh",
     prices: {
       [VehicleType.SEDAN]: 1100,
@@ -648,7 +664,7 @@ export const PRICING_MATRIX: RoutePrice[] = [
     }
   },
   {
-    from: "Johor Bahru",
+    from: "Johor Bahru - City / JB Sentral",
     to: "Taiping",
     prices: {
       [VehicleType.SEDAN]: 1200,
@@ -658,7 +674,7 @@ export const PRICING_MATRIX: RoutePrice[] = [
     }
   },
   {
-    from: "Johor Bahru",
+    from: "Johor Bahru - City / JB Sentral",
     to: "Penang",
     prices: {
       [VehicleType.SEDAN]: 1300,

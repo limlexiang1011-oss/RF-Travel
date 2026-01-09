@@ -108,9 +108,9 @@ export const translations = {
       header: "Chat with RF Travel",
       status: "Typically replies instantly",
       intro: "Hi! How can we help you today?",
-      q1: "I'd like to know about charter pricing 👍",
-      q2: "Airport transfer service ✈️",
-      q3: "Full-day standby driver & tour ⭐",
+      q1: "【Website｜Charter Pricing】\nHi, I'd like to know about charter pricing.",
+      q2: "【Website｜Airport Transfer】\nHi, I'd like to inquire about airport transfer service.",
+      q3: "【Website｜Full Day Charter】\nHi, I'd like to know about full-day standby and tour arrangements.",
       send: "Send Message"
     },
     faq: {
@@ -231,9 +231,9 @@ export const translations = {
       header: "RF Travel 客服",
       status: "通常会在 1 分钟内回复",
       intro: "您好！请问有什么可以帮您的吗？",
-      q1: "我想要了解包车服务价格👍",
-      q2: "机场接送服务✈️",
-      q3: "司机全程待命+包车游⭐",
+      q1: "【Website｜包车价格咨询】\n你好，我想了解包车服务价格。",
+      q2: "【Website｜机场接送】\n你好，我想咨询机场接送服务。",
+      q3: "【Website｜司机全程待命 / 包车游】\n你好，我想了解司机全程待命和包车游的安排。",
       send: "发送咨询"
     },
     faq: {
