@@ -80,6 +80,12 @@ export const BookingForm: React.FC<{ prefillRoute?: { from: string, to: string }
     setState(prev => ({ ...prev, [key]: value }));
   };
 
+  const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    // Only allow digits 0-9 and the plus (+) symbol.
+    const val = e.target.value.replace(/[^0-9+]/g, '');
+    updateState('phone', val);
+  };
+
   const nextStep = () => updateState('step', state.step + 1);
   const prevStep = () => updateState('step', state.step - 1);
 
@@ -379,10 +385,10 @@ export const BookingForm: React.FC<{ prefillRoute?: { from: string, to: string }
           <h3 className="text-xl font-bold text-gray-800 mb-2">{t.title4}</h3>
           <div className="space-y-3">
              <div><label className="block text-sm font-medium text-gray-700 mb-1">{t.name}</label><div className="relative"><User className="absolute left-3 top-1/2 -translate-y-1/2 h-5 text-gray-400" /><input type="text" className={inputBaseClass} value={state.name} onChange={(e) => updateState('name', e.target.value)}/></div></div>
-             <div><label className="block text-sm font-medium text-gray-700 mb-1">{t.phone}</label><div className="relative"><Phone className="absolute left-3 top-1/2 -translate-y-1/2 h-5 text-gray-400" /><input type="tel" className={inputBaseClass} value={state.phone} onChange={(e) => updateState('phone', e.target.value)}/></div></div>
+             <div><label className="block text-sm font-medium text-gray-700 mb-1">{t.phone}</label><div className="relative"><Phone className="absolute left-3 top-1/2 -translate-y-1/2 h-5 text-gray-400" /><input type="tel" className={inputBaseClass} value={state.phone} onChange={handlePhoneChange} placeholder="Example: +60123456789"/></div></div>
              <div><label className="block text-sm font-medium text-gray-700 mb-1">{t.requests}</label><textarea className="w-full p-3 border rounded-xl h-24 text-sm" value={state.notes} onChange={(e) => updateState('notes', e.target.value)}/></div>
           </div>
-          <div className="pt-4"><button onClick={handleWhatsAppClick} disabled={!state.name || !state.phone} className="w-full bg-[#25D366] text-white px-6 py-4 rounded-xl font-bold flex items-center justify-center gap-2 shadow-lg hover:bg-[#20bd5a] transition-colors"><span>{t.bookWa}</span><ArrowRight size={20} /></button></div>
+          <div className="pt-4"><button onClick={handleWhatsAppClick} disabled={!state.name || !state.phone} className="w-full bg-[#25D366] text-white px-6 py-4 rounded-xl font-bold flex items-center justify-center gap-2 shadow-lg hover:bg-[#20bd5a] transition-colors disabled:opacity-50"><span>{t.bookWa}</span><ArrowRight size={20} /></button></div>
         </div>
       )}
     </div>
