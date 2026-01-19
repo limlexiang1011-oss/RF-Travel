@@ -54,6 +54,18 @@
     fbq('track', 'PageView');
     </script>
 
+    <script>
+      // Suppress Tailwind CDN production warning
+      (function() {
+        var originalWarn = console.warn;
+        console.warn = function(...args) {
+          if (args[0] && typeof args[0] === 'string' && args[0].includes('cdn.tailwindcss.com should not be used in production')) {
+            return;
+          }
+          originalWarn.apply(console, args);
+        };
+      })();
+    </script>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <!-- Link to external CSS to resolve 404 error -->
