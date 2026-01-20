@@ -359,7 +359,11 @@ export const BookingForm: React.FC<{ prefillRoute?: { from: string, to: string }
                       <p className="text-xs text-gray-500">{vehicle.priceInfo.display}</p>
                       {vehicle.priceInfo.isQuote && (
                         <button 
-                           onClick={(e) => { e.stopPropagation(); updateState('selectedVehicle', vehicle.type); handleWhatsAppClick(); }}
+                           onClick={(e) => { 
+                             e.stopPropagation(); 
+                             updateState('selectedVehicle', vehicle.type); 
+                             nextStep(); 
+                           }}
                            className="flex items-center gap-1 px-2 py-0.5 bg-[#25D366] text-white rounded-full text-[10px] font-bold hover:bg-[#20bd5a] transition-all shadow-sm"
                         >
                            <MessageCircle size={10} /> {lang === 'en' ? 'Get Quote' : '咨询报价'}
