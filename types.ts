@@ -24,6 +24,7 @@ export interface VehicleSpecs {
   paxLabel?: string;
   description: string;
   image: string;
+  interiorImage: string; // New field for hover effect
 }
 
 export interface BookingState {

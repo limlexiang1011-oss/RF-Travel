@@ -51,7 +51,8 @@ export const VEHICLES: VehicleSpecs[] = [
     maxLuggage: 3, // Updated from 2 to 3
     paxLabel: "Max 4 Passenger",
     description: "Ideal for couples or small families. Comfortable and economical.",
-    image: "https://i.ibb.co/MkrMRGHP/4.png"
+    image: "https://i.ibb.co/MkrMRGHP/4.png",
+    interiorImage: "https://i.ibb.co/Z6b5YSLP/22.png"
   },
   {
     type: VehicleType.MPV_STD,
@@ -59,7 +60,8 @@ export const VEHICLES: VehicleSpecs[] = [
     maxLuggage: 4, // Mixed
     paxLabel: "Max 6 Passenger",
     description: "Toyota Innova or Perodua Aruz. Great for families with extra luggage space.",
-    image: "https://www.bigwheels.my/wp-content/uploads/2021/04/Perodua-Aruz.jpg"
+    image: "https://www.bigwheels.my/wp-content/uploads/2021/04/Perodua-Aruz.jpg",
+    interiorImage: "https://i.ibb.co/FLhMv7xx/23.png"
   },
   {
     type: VehicleType.MPV_LUX,
@@ -67,7 +69,8 @@ export const VEHICLES: VehicleSpecs[] = [
     maxLuggage: 5,
     paxLabel: "Max 6-7 Passenger",
     description: "Toyota Alphard / Vellfire. VIP comfort with pilot seats and premium legroom.",
-    image: "https://i.ibb.co/F1r3WqY/5.png"
+    image: "https://i.ibb.co/F1r3WqY/5.png",
+    interiorImage: "https://i.ibb.co/1fZNHNnC/24.png"
   },
   {
     type: VehicleType.VAN,
@@ -75,7 +78,8 @@ export const VEHICLES: VehicleSpecs[] = [
     maxLuggage: 7,
     paxLabel: "Max 9 Passenger",
     description: "Hyundai Starex or similar. Spacious Multi-Purpose Vehicle for larger groups.",
-    image: "https://i.ibb.co/TMhrqDFj/Gemini-Generated-Image-ayddmgayddmgaydd.png"
+    image: "https://i.ibb.co/TMhrqDFj/Gemini-Generated-Image-ayddmgayddmgaydd.png",
+    interiorImage: "https://i.ibb.co/k6Bk6mTj/25.png"
   }
 ];
 
