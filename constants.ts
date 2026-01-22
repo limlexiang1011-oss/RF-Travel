@@ -79,7 +79,7 @@ export const VEHICLES: VehicleSpecs[] = [
     paxLabel: "Max 9 Passenger",
     description: "Hyundai Starex or similar. Spacious Multi-Purpose Vehicle for larger groups.",
     image: "https://i.ibb.co/TMhrqDFj/Gemini-Generated-Image-ayddmgayddmgaydd.png",
-    interiorImage: "https://i.ibb.co/k6Bk6mTj/25.png"
+    interiorImage: "https://i.ibb.co/kgGfydGq/RF-Logo-1.png"
   }
 ];
 
