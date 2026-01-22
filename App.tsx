@@ -240,56 +240,69 @@ const App: React.FC = () => {
       </nav>
 
       {/* HERO SECTION */}
-      <section id="home" className="relative min-h-[92vh] flex items-center py-20 bg-slate-900 overflow-hidden">
+      <section id="home" className="relative min-h-[100dvh] flex items-center py-20 bg-slate-900 overflow-hidden">
         {HERO_IMAGES.map((img, index) => (
-          <div key={img} className={`absolute inset-0 bg-cover bg-center transition-opacity duration-[2000ms] ease-in-out z-0 transform scale-105 ${index === heroIndex ? 'opacity-100' : 'opacity-0'}`} style={{ backgroundImage: `url('${img}')` }} />
+          <img 
+            key={img} 
+            src={img}
+            alt="Hero Background"
+            className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-[2000ms] ease-in-out z-0 md:transform md:scale-105 ${index === heroIndex ? 'opacity-100' : 'opacity-0'}`} 
+          />
         ))}
-        <div className="absolute inset-0 z-0 bg-gradient-to-r from-slate-900/95 via-slate-900/70 to-slate-900/30 pointer-events-none"></div>
-        <div className="absolute inset-0 z-0 bg-gradient-to-t from-slate-900/90 via-transparent to-slate-900/20 pointer-events-none"></div>
         
-        <div className="container mx-auto px-4 z-10 relative">
-          <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-20">
-            <div className="lg:w-1/2 text-white space-y-8 text-center lg:text-left animate-fadeIn">
-              <div className="inline-flex items-center gap-2 bg-teal-500/10 border border-teal-400/30 backdrop-blur-md px-4 py-1.5 rounded-full text-teal-300 text-xs md:text-sm font-bold tracking-wide uppercase shadow-lg shadow-teal-900/20">
+        {/* RE-ADDED OVERLAYS: Balanced for visibility vs readability */}
+        {/* 1. Base dark tint - clear enough to see bg, dark enough for text base */}
+        <div className="absolute inset-0 z-0 bg-black/30 pointer-events-none"></div>
+
+        {/* 2. Gradient focusing on the left (text area): Darker on left, fading to transparent on right */}
+        <div className="absolute inset-0 z-0 bg-gradient-to-r from-slate-900/80 via-black/20 to-transparent pointer-events-none"></div>
+
+        {/* 3. Gradient from bottom: Darker bottom for visual stability */}
+        <div className="absolute inset-0 z-0 bg-gradient-to-t from-slate-900/80 via-transparent to-slate-900/30 pointer-events-none"></div>
+        
+        <div className="container mx-auto px-4 z-10 relative pt-16 md:pt-0">
+          <div className="flex flex-col lg:flex-row items-center gap-8 lg:gap-20">
+            <div className="lg:w-1/2 text-white space-y-6 md:space-y-8 text-center lg:text-left animate-fadeIn">
+              <div className="inline-flex items-center gap-2 bg-black/30 backdrop-blur-md px-4 py-1.5 rounded-full text-teal-300 text-xs md:text-sm font-bold tracking-wide uppercase shadow-lg border border-white/10">
                 <Star size={14} className="fill-current" />
                 <span>{t.hero.badge}</span>
               </div>
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight tracking-tight drop-shadow-sm">
+              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight tracking-tight drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
                 {lang === 'en' ? (
-                  <>Charter Car in <br/><span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-teal-200 to-emerald-500">Malaysia</span> with Ease.</>
+                  <>Charter Car in <br/><span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-teal-200 to-emerald-500 drop-shadow-sm">Malaysia</span> with Ease.</>
                 ) : (
-                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-teal-200 to-emerald-500">轻松畅游马来西亚</span>
+                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-teal-200 to-emerald-500 drop-shadow-sm">轻松畅游马来西亚</span>
                 )}
               </h1>
-              <p className="text-lg text-slate-300 max-w-xl mx-auto lg:mx-0 font-light leading-relaxed">{t.hero.subtitle}</p>
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-6 py-4 border-t border-white/10 border-b lg:border-b-0">
+              <p className="text-lg text-white max-w-xl mx-auto lg:mx-0 font-medium leading-relaxed drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">{t.hero.subtitle}</p>
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-6 py-4 border-t border-white/30 border-b lg:border-b-0 bg-black/10 md:bg-transparent rounded-xl md:rounded-none backdrop-blur-sm md:backdrop-blur-none">
                   <div className="flex flex-col items-center lg:items-start gap-1">
-                      <div className="flex items-center gap-1.5 text-yellow-400"><Star size={18} fill="currentColor" /><span className="font-bold text-white text-lg">5.0</span></div>
-                      <span className="text-xs text-slate-400 uppercase tracking-wider font-semibold">{lang === 'en' ? 'Customer Rating' : '客户好评'}</span>
+                      <div className="flex items-center gap-1.5 text-yellow-400"><Star size={18} fill="currentColor" /><span className="font-bold text-white text-lg drop-shadow">5.0</span></div>
+                      <span className="text-xs text-white uppercase tracking-wider font-semibold drop-shadow">{lang === 'en' ? 'Customer Rating' : '客户好评'}</span>
                   </div>
                   <div className="flex flex-col items-center lg:items-start gap-1">
-                      <div className="flex items-center gap-1.5 text-teal-400"><Users size={18} /><span className="font-bold text-white text-lg">5000+</span></div>
-                      <span className="text-xs text-slate-400 uppercase tracking-wider font-semibold">{lang === 'en' ? 'Happy Guests' : '服务人次'}</span>
+                      <div className="flex items-center gap-1.5 text-teal-400"><Users size={18} /><span className="font-bold text-white text-lg drop-shadow">5000+</span></div>
+                      <span className="text-xs text-white uppercase tracking-wider font-semibold drop-shadow">{lang === 'en' ? 'Happy Guests' : '服务人次'}</span>
                   </div>
                    <div className="hidden md:flex flex-col items-center lg:items-start gap-1">
-                      <div className="flex items-center gap-1.5 text-blue-400"><ShieldCheck size={18} /><span className="font-bold text-white text-lg">100%</span></div>
-                      <span className="text-xs text-slate-400 uppercase tracking-wider font-semibold">{lang === 'en' ? 'Safe Travel' : '安全出行'}</span>
+                      <div className="flex items-center gap-1.5 text-blue-400"><ShieldCheck size={18} /><span className="font-bold text-white text-lg drop-shadow">100%</span></div>
+                      <span className="text-xs text-white uppercase tracking-wider font-semibold drop-shadow">{lang === 'en' ? 'Safe Travel' : '安全出行'}</span>
                   </div>
               </div>
               <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
-                <span className="text-slate-400 text-sm font-medium">{t.hero.follow}</span>
+                <span className="text-white text-sm font-medium drop-shadow-md">{t.hero.follow}</span>
                 <div className="flex gap-3">
-                  <a href="https://www.facebook.com/rftravel.transport" target="_blank" rel="noopener noreferrer" className="bg-[#1877F2]/10 hover:bg-[#1877F2] text-[#1877F2] hover:text-white border border-[#1877F2]/30 hover:border-transparent px-5 py-2 rounded-full flex items-center gap-2 transition-all duration-300"><Facebook size={18} fill="currentColor" /><span className="text-sm font-bold">Facebook</span></a>
-                  <a href="https://www.xiaohongshu.com/user/profile/63668abe000000001f01fa4b" target="_blank" rel="noopener noreferrer" className="bg-[#FF2442]/10 hover:bg-[#FF2442] text-[#FF2442] hover:text-white border border-[#FF2442]/30 hover:border-transparent px-5 py-2 rounded-full flex items-center gap-2 transition-all duration-300"><span className="font-bold text-sm tracking-tight">{lang === 'en' ? 'Red' : '小红书'}</span></a>
+                  <a href="https://www.facebook.com/rftravel.transport" target="_blank" rel="noopener noreferrer" className="bg-[#1877F2]/20 hover:bg-[#1877F2] text-white hover:text-white border border-[#1877F2]/50 hover:border-transparent px-5 py-2 rounded-full flex items-center gap-2 transition-all duration-300 backdrop-blur-sm"><Facebook size={18} fill="currentColor" /><span className="text-sm font-bold">Facebook</span></a>
+                  <a href="https://www.xiaohongshu.com/user/profile/63668abe000000001f01fa4b" target="_blank" rel="noopener noreferrer" className="bg-[#FF2442]/20 hover:bg-[#FF2442] text-white hover:text-white border border-[#FF2442]/50 hover:border-transparent px-5 py-2 rounded-full flex items-center gap-2 transition-all duration-300 backdrop-blur-sm"><span className="font-bold text-sm tracking-tight">{lang === 'en' ? 'Red' : '小红书'}</span></a>
                 </div>
               </div>
             </div>
             <div id="booking" className="lg:w-1/2 w-full max-w-lg mx-auto lg:mr-0 relative">
                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[90%] h-[90%] bg-teal-500/20 blur-[50px] rounded-full pointer-events-none"></div>
                <div className="relative"><BookingForm prefillRoute={prefillRoute} lang={lang} /></div>
-               <button id="whatsapp-help-button" type="button" onClick={() => handleWhatsAppContact()} className="w-full mt-6 flex items-center justify-center gap-3 cursor-pointer hover:bg-white/5 transition-colors group bg-transparent p-3 rounded-xl border border-white/10">
+               <button id="whatsapp-help-button" type="button" onClick={() => handleWhatsAppContact()} className="w-full mt-6 flex items-center justify-center gap-3 cursor-pointer hover:bg-white/10 transition-colors group bg-black/20 md:bg-transparent p-3 rounded-xl border border-white/20 backdrop-blur-sm">
                   <div className="text-teal-400 group-hover:scale-110 transition-transform"><WhatsAppIcon size={20} /></div>
-                  <span className="text-slate-300 group-hover:text-white font-medium text-xs md:text-sm text-left leading-snug">{t.booking.whatsappHelp}</span>
+                  <span className="text-slate-100 group-hover:text-white font-medium text-xs md:text-sm text-left leading-snug drop-shadow-sm">{t.booking.whatsappHelp}</span>
                </button>
             </div>
           </div>
