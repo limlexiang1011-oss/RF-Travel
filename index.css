@@ -13,3 +13,103 @@ html {
   -ms-overflow-style: none;  /* IE and Edge */
   scrollbar-width: none;  /* Firefox */
 }
+
+/* --- Premium Button Styles --- */
+
+@keyframes gradientFlow {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes shineSlide {
+  0% { left: -100%; opacity: 0; }
+  1% { left: -100%; opacity: 0.5; }
+  50% { opacity: 0.5; }
+  100% { left: 200%; opacity: 0; }
+}
+
+/* Primary Premium Button (Teal/Brand Color) */
+.btn-premium {
+  position: relative;
+  overflow: hidden;
+  /* Rich gradient from teal to emerald */
+  background: linear-gradient(90deg, #0d9488, #14b8a6, #2dd4bf, #0d9488);
+  background-size: 300% 100%;
+  color: white;
+  border: none;
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 15px -3px rgba(13, 148, 136, 0.4), 0 2px 6px -2px rgba(13, 148, 136, 0.2);
+  z-index: 1;
+  animation: gradientFlow 6s ease infinite;
+}
+
+.btn-premium:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px -5px rgba(13, 148, 136, 0.5), 0 8px 10px -6px rgba(13, 148, 136, 0.3);
+  /* Speed up animation slightly or shift brightness on hover if desired, 
+     but transform/shadow usually suffices for premium feel */
+}
+
+.btn-premium:active {
+  transform: translateY(1px) scale(0.98);
+  box-shadow: 0 2px 10px -2px rgba(13, 148, 136, 0.3);
+}
+
+.btn-premium:disabled {
+  background: #cbd5e1;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+  animation: none;
+}
+
+/* WhatsApp / Action Premium Button (Green) */
+.btn-premium-green {
+  position: relative;
+  overflow: hidden;
+  /* Rich gradient for WhatsApp green */
+  background: linear-gradient(90deg, #128C7E, #25D366, #4ADE80, #128C7E);
+  background-size: 300% 100%;
+  color: white;
+  border: none;
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 15px -3px rgba(37, 211, 102, 0.4), 0 2px 6px -2px rgba(37, 211, 102, 0.2);
+  z-index: 1;
+  animation: gradientFlow 6s ease infinite;
+}
+
+.btn-premium-green:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px -5px rgba(37, 211, 102, 0.5), 0 8px 10px -6px rgba(37, 211, 102, 0.3);
+}
+
+.btn-premium-green:active {
+  transform: translateY(1px) scale(0.98);
+  box-shadow: 0 2px 10px -2px rgba(37, 211, 102, 0.3);
+}
+
+/* Shine Effect Overlay */
+.btn-shine::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(
+    to right,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.4) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  transform: skewX(-25deg);
+  z-index: 2;
+  pointer-events: none;
+}
+
+.btn-shine:hover::after {
+  animation: shineSlide 0.8s ease-in-out;
+}

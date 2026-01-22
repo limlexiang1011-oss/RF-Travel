@@ -88,6 +88,7 @@ export const PRICING_MATRIX: RoutePrice[] = [
   {
     from: "Singapore",
     to: "Johor Tour (10 Hour)",
+    labelTo: "Johor Tour\n(10 Hour)",
     prices: {
       [VehicleType.SEDAN]: 300 * R,
       [VehicleType.MPV_STD]: 350 * R,
@@ -99,6 +100,7 @@ export const PRICING_MATRIX: RoutePrice[] = [
   {
     from: "Singapore",
     to: "Johor Tour (12 Hour)",
+    labelTo: "Johor Tour\n(12 Hour)",
     prices: {
       [VehicleType.SEDAN]: 350 * R,
       [VehicleType.MPV_STD]: 400 * R,
@@ -338,6 +340,7 @@ export const PRICING_MATRIX: RoutePrice[] = [
   {
     from: "Kuala Lumpur - City Area",
     to: "Local Tour (10 Hour)",
+    labelTo: "Local Tour\n(10 Hour)",
     prices: {
       [VehicleType.SEDAN]: 650,
       [VehicleType.MPV_STD]: 800,
@@ -349,6 +352,7 @@ export const PRICING_MATRIX: RoutePrice[] = [
   {
     from: "Kuala Lumpur - City Area",
     to: "Local Tour (12 Hour)",
+    labelTo: "Local Tour\n(12 Hour)",
     prices: {
       [VehicleType.SEDAN]: 750,
       [VehicleType.MPV_STD]: 950,
@@ -373,7 +377,7 @@ export const PRICING_MATRIX: RoutePrice[] = [
   {
     from: "Kuala Lumpur - KLIA 1/2", 
     to: "Genting Highlands",
-    labelTo: "Genting (From KLIA)",
+    labelTo: "Genting\n(From KLIA)",
     prices: {
       [VehicleType.SEDAN]: 250,
       [VehicleType.MPV_STD]: 300,
@@ -385,7 +389,7 @@ export const PRICING_MATRIX: RoutePrice[] = [
   {
     from: "Kuala Lumpur - City Area",
     to: "Genting Highlands",
-    labelTo: "Genting (From City Area)",
+    labelTo: "Genting\n(From City)",
     prices: {
       [VehicleType.SEDAN]: 150,
       [VehicleType.MPV_STD]: 250,
@@ -457,6 +461,7 @@ export const PRICING_MATRIX: RoutePrice[] = [
   {
     from: "Johor Bahru - City / JB Sentral",
     to: "Local Tour (10 Hour)",
+    labelTo: "Local Tour\n(10 Hour)",
     prices: {
       [VehicleType.SEDAN]: 650,
       [VehicleType.MPV_STD]: 800,
@@ -468,6 +473,7 @@ export const PRICING_MATRIX: RoutePrice[] = [
   {
     from: "Johor Bahru - City / JB Sentral",
     to: "Local Tour (12 Hour)",
+    labelTo: "Local Tour\n(12 Hour)",
     prices: {
       [VehicleType.SEDAN]: 750,
       [VehicleType.MPV_STD]: 950,

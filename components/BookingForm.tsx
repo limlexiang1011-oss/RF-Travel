@@ -228,7 +228,7 @@ export const BookingForm: React.FC<{ prefillRoute?: { from: string, to: string }
     <div className="bg-white rounded-2xl shadow-xl p-6 md:p-8 w-full max-w-lg mx-auto relative overflow-hidden">
       <div className="flex justify-between mb-8 relative">
          <div className="absolute top-1/2 left-0 w-full h-1 bg-gray-100 -z-10"></div>
-         {[1, 2, 3, 4].map(s => (<div key={s} className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold transition-colors ${state.step >= s ? 'bg-primary-600 text-white' : 'bg-gray-200 text-gray-500'}`}>{s}</div>))}
+         {[1, 2, 3, 4].map(s => (<div key={s} className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold transition-colors ${state.step >= s ? 'bg-primary-600 text-white shadow-lg shadow-primary-500/30' : 'bg-gray-200 text-gray-500'}`}>{s}</div>))}
       </div>
       {state.step === 1 && (
         <div className="space-y-4 animate-fadeIn">
@@ -242,7 +242,7 @@ export const BookingForm: React.FC<{ prefillRoute?: { from: string, to: string }
             <div><label className="block text-sm font-medium text-gray-700 mb-1">{t.time}</label><div className="relative"><Clock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 pointer-events-none z-10" /><input type="time" className={`${inputBaseClass} appearance-none`} value={state.time} onChange={(e) => updateState('time', e.target.value)}/></div></div>
           </div>
           <div className="flex flex-wrap gap-4 py-2 border-b border-gray-100">
-             {['one-way', 'round-trip', 'day-trip', 'custom'].map(type => (<label key={type} className="flex items-center gap-2 cursor-pointer"><input type="radio" checked={state.tripType === type} onChange={() => updateState('tripType', type)} className="w-5 h-5 text-primary-600"/><span className="font-medium text-gray-700">{t[type === 'one-way' ? 'oneWay' : type === 'round-trip' ? 'roundTrip' : type === 'day-trip' ? 'dayTrip' : 'multiStop']}</span></label>))}
+             {['one-way', 'round-trip', 'day-trip', 'custom'].map(type => (<label key={type} className="flex items-center gap-2 cursor-pointer"><input type="radio" checked={state.tripType === type} onChange={() => updateState('tripType', type)} className="w-5 h-5 text-primary-600 focus:ring-primary-500"/><span className="font-medium text-gray-700">{t[type === 'one-way' ? 'oneWay' : type === 'round-trip' ? 'roundTrip' : type === 'day-trip' ? 'dayTrip' : 'multiStop']}</span></label>))}
           </div>
           {state.tripType === 'day-trip' && <div className="bg-orange-50 p-4 rounded-xl border border-orange-100"><div className="text-sm font-bold text-orange-800 mb-2 flex items-center gap-2"><Clock size={16}/> {t.duration}</div><div className="flex gap-4">{[10, 12].map(h => <button key={h} onClick={() => updateState('dayTripDuration', h)} className={`flex-1 py-3 rounded-lg border font-semibold ${state.dayTripDuration === h ? 'bg-orange-500 text-white border-orange-600 shadow-md' : 'bg-white text-gray-600 border-gray-200'}`}>{h} {t.hours}</button>)}</div></div>}
           {state.tripType === 'round-trip' && (
@@ -291,7 +291,7 @@ export const BookingForm: React.FC<{ prefillRoute?: { from: string, to: string }
               </div>
             </div>
           )}
-          {state.tripType === 'custom' ? (<div className="bg-blue-50 p-6 rounded-xl text-center"><button onClick={handleCustomQuoteClick} className="w-full bg-[#25D366] text-white px-8 py-3 rounded-full font-bold shadow-lg">{t.customQuote}</button></div>) : (<div className="pt-4 flex justify-end"><button onClick={nextStep} disabled={!state.fromLocation || !state.toLocation || !state.date} className="bg-primary-600 text-white px-6 py-3 rounded-full font-semibold disabled:opacity-50">{t.next}</button></div>)}
+          {state.tripType === 'custom' ? (<div className="bg-blue-50 p-6 rounded-xl text-center"><button onClick={handleCustomQuoteClick} className="w-full btn-premium-green btn-shine px-8 py-3 rounded-full font-bold shadow-lg">{t.customQuote}</button></div>) : (<div className="pt-4 flex justify-end"><button onClick={nextStep} disabled={!state.fromLocation || !state.toLocation || !state.date} className="btn-premium btn-shine px-8 py-3 rounded-full font-semibold disabled:opacity-50 disabled:cursor-not-allowed">{t.next}</button></div>)}
         </div>
       )}
       {state.step === 2 && (
@@ -341,22 +341,26 @@ export const BookingForm: React.FC<{ prefillRoute?: { from: string, to: string }
           </div>
 
           <div className="pt-6 flex justify-between">
-            <button onClick={prevStep} className="text-gray-600 font-medium flex items-center"><ChevronLeft size={18} /> {t.back}</button>
-            <button onClick={nextStep} className="bg-primary-600 text-white px-6 py-3 rounded-full font-semibold">{t.seeVehicles}</button>
+            <button onClick={prevStep} className="text-gray-600 font-medium flex items-center hover:text-gray-900 transition-colors"><ChevronLeft size={18} /> {t.back}</button>
+            <button onClick={nextStep} className="btn-premium btn-shine px-8 py-3 rounded-full font-semibold">{t.seeVehicles}</button>
           </div>
         </div>
       )}
       {state.step === 3 && (
         <div className="space-y-4 animate-fadeIn">
           <h3 className="text-xl font-bold text-gray-800 mb-4">{t.title3}</h3>
-          <div className="space-y-3 max-h-[400px] overflow-y-auto pr-2">
+          <div className="space-y-4 max-h-[500px] overflow-y-auto pr-2">
             {availableVehicles.map((vehicle) => (
-              <div key={vehicle.type} onClick={() => vehicle.isCapacityOk && updateState('selectedVehicle', vehicle.type)} className={`flex flex-col sm:flex-row items-center p-4 rounded-xl border-2 cursor-pointer transition-all ${state.selectedVehicle === vehicle.type ? 'border-primary-500 bg-primary-50' : 'border-gray-200'} ${!vehicle.isCapacityOk ? 'opacity-40 grayscale cursor-not-allowed bg-gray-50' : 'hover:border-primary-200'}`}>
-                <div className="w-24 h-16 bg-gray-200 rounded-lg overflow-hidden mb-3 sm:mb-0 flex-shrink-0"><img src={vehicle.image} alt={vehicle.type} className="w-full h-full object-cover" /></div>
-                <div className="flex-1 px-4 text-center sm:text-left">
-                   <h4 className="font-bold text-gray-900">{lang === 'en' ? vehicle.type : (vehicle.type === 'Sedan' ? '轿车' : vehicle.type === 'Standard MPV' ? '标准MPV' : vehicle.type === 'Luxury MPV' ? '豪华MPV' : '大型MPV')}</h4>
-                   <div className={`flex flex-col sm:flex-row items-center gap-2 ${vehicle.priceInfo.isQuote ? 'mt-1' : ''}`}>
-                      <p className="text-xs text-gray-500">{vehicle.priceInfo.display}</p>
+              <div key={vehicle.type} onClick={() => vehicle.isCapacityOk && updateState('selectedVehicle', vehicle.type)} className={`flex flex-col sm:flex-row items-center p-4 rounded-xl border-2 cursor-pointer transition-all ${state.selectedVehicle === vehicle.type ? 'border-primary-500 bg-primary-50' : 'border-gray-200'} ${!vehicle.isCapacityOk ? 'opacity-40 grayscale cursor-not-allowed bg-gray-50' : 'hover:border-primary-200 hover:shadow-sm'}`}>
+                {/* Updated Image Container: Significantly larger and uses object-contain */}
+                <div className="w-full sm:w-48 h-36 sm:h-32 bg-gray-100 rounded-lg overflow-hidden mb-4 sm:mb-0 sm:mr-4 flex-shrink-0 p-2 border border-gray-100">
+                    <img src={vehicle.image} alt={vehicle.type} className="w-full h-full object-contain mix-blend-multiply" />
+                </div>
+                
+                <div className="flex-1 px-2 text-center sm:text-left w-full">
+                   <h4 className="font-bold text-gray-900 text-lg mb-1">{lang === 'en' ? vehicle.type : (vehicle.type === 'Sedan' ? '轿车' : vehicle.type === 'Standard MPV' ? '标准MPV' : vehicle.type === 'Luxury MPV' ? '豪华MPV' : '大型MPV')}</h4>
+                   <div className={`flex flex-col sm:flex-row items-center gap-2 justify-center sm:justify-start ${vehicle.priceInfo.isQuote ? 'mt-1' : ''}`}>
+                      <p className="text-base font-semibold text-primary-700">{vehicle.priceInfo.display}</p>
                       {vehicle.priceInfo.isQuote && (
                         <button 
                            onClick={(e) => { 
@@ -364,24 +368,24 @@ export const BookingForm: React.FC<{ prefillRoute?: { from: string, to: string }
                              updateState('selectedVehicle', vehicle.type); 
                              nextStep(); 
                            }}
-                           className="flex items-center gap-1 px-2 py-0.5 bg-[#25D366] text-white rounded-full text-[10px] font-bold hover:bg-[#20bd5a] transition-all shadow-sm"
+                           className="flex items-center gap-1 px-3 py-1 btn-premium-green btn-shine rounded-full text-[10px] font-bold shadow-sm"
                         >
                            <MessageCircle size={10} /> {lang === 'en' ? 'Get Quote' : '咨询报价'}
                         </button>
                       )}
                    </div>
                    {vehicle.priceInfo.isQuote && (
-                     <p className="text-[9px] text-primary-600 mt-1 font-medium leading-tight">
+                     <p className="text-[10px] text-gray-500 mt-1 font-medium leading-tight">
                        {lang === 'en' ? 'Welcome to contact us directly for a fast and accurate quote.' : '欢迎直接联系我们，快速给您准确报价'}
                      </p>
                    )}
-                   {!vehicle.isCapacityOk && <p className="text-[10px] text-red-500 mt-1 font-medium">{lang === 'en' ? 'Exceeds Capacity' : '人数或行李超限'}</p>}
+                   {!vehicle.isCapacityOk && <p className="text-xs text-red-500 mt-2 font-medium bg-red-50 inline-block px-2 py-1 rounded">{lang === 'en' ? 'Exceeds Capacity' : '人数或行李超限'}</p>}
                 </div>
-                {state.selectedVehicle === vehicle.type && <CheckCircle size={20} className="text-primary-600" />}
+                {state.selectedVehicle === vehicle.type && <div className="mt-3 sm:mt-0"><CheckCircle size={28} className="text-primary-600" /></div>}
               </div>
             ))}
           </div>
-          <div className="pt-4 flex justify-between"><button onClick={prevStep} className="text-gray-600 font-medium flex items-center"><ChevronLeft size={18} /> {t.back}</button><button onClick={nextStep} disabled={!state.selectedVehicle} className="bg-primary-600 text-white px-6 py-3 rounded-full font-semibold disabled:opacity-50">{t.confirm}</button></div>
+          <div className="pt-4 flex justify-between"><button onClick={prevStep} className="text-gray-600 font-medium flex items-center hover:text-gray-900 transition-colors"><ChevronLeft size={18} /> {t.back}</button><button onClick={nextStep} disabled={!state.selectedVehicle} className="btn-premium btn-shine px-8 py-3 rounded-full font-semibold disabled:opacity-50 disabled:cursor-not-allowed">{t.confirm}</button></div>
         </div>
       )}
       {state.step === 4 && (
@@ -390,9 +394,9 @@ export const BookingForm: React.FC<{ prefillRoute?: { from: string, to: string }
           <div className="space-y-3">
              <div><label className="block text-sm font-medium text-gray-700 mb-1">{t.name}</label><div className="relative"><User className="absolute left-3 top-1/2 -translate-y-1/2 h-5 text-gray-400" /><input type="text" className={inputBaseClass} value={state.name} onChange={(e) => updateState('name', e.target.value)}/></div></div>
              <div><label className="block text-sm font-medium text-gray-700 mb-1">{t.phone}</label><div className="relative"><Phone className="absolute left-3 top-1/2 -translate-y-1/2 h-5 text-gray-400" /><input type="tel" className={inputBaseClass} value={state.phone} onChange={handlePhoneChange} placeholder="Example: +60123456789"/></div></div>
-             <div><label className="block text-sm font-medium text-gray-700 mb-1">{t.requests}</label><textarea className="w-full p-3 border rounded-xl h-24 text-sm" value={state.notes} onChange={(e) => updateState('notes', e.target.value)}/></div>
+             <div><label className="block text-sm font-medium text-gray-700 mb-1">{t.requests}</label><textarea className="w-full p-3 border rounded-xl h-24 text-sm focus:ring-2 focus:ring-primary-500 outline-none" value={state.notes} onChange={(e) => updateState('notes', e.target.value)}/></div>
           </div>
-          <div className="pt-4"><button onClick={handleWhatsAppClick} disabled={!state.name || !state.phone} className="w-full bg-[#25D366] text-white px-6 py-4 rounded-xl font-bold flex items-center justify-center gap-2 shadow-lg hover:bg-[#20bd5a] transition-colors disabled:opacity-50"><span>{t.bookWa}</span><ArrowRight size={20} /></button></div>
+          <div className="pt-4"><button onClick={handleWhatsAppClick} disabled={!state.name || !state.phone} className="w-full btn-premium-green btn-shine px-6 py-4 rounded-xl font-bold flex items-center justify-center gap-2 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"><span>{t.bookWa}</span><ArrowRight size={20} /></button></div>
         </div>
       )}
     </div>

@@ -3,9 +3,9 @@ import React, { useState, useEffect, useRef } from 'react';
 import { BookingForm } from './components/BookingForm.tsx';
 import { PriceTable } from './components/PriceTable.tsx';
 import { VEHICLES, TESTIMONIALS, FAQS, WHATSAPP_NUMBER } from './constants.ts';
-import { Check, ShieldCheck, Map, Phone, Menu, X, Facebook, ChevronLeft, ChevronRight, Send, MessageCircle, CalendarDays } from 'lucide-react';
+import { Check, ShieldCheck, Map, Phone, Menu, X, Facebook, ChevronLeft, ChevronRight, Send, MessageCircle, CalendarDays, Users, Briefcase, ArrowUpRight, Plus, Minus, HelpCircle, Star, Clock, ArrowRight } from 'lucide-react';
 import { translations } from './translations.ts';
-import { Language } from './types.ts';
+import { Language, VehicleType } from './types.ts';
 
 const HERO_IMAGES = [
   "https://images.unsplash.com/photo-1596422846543-75c6fc197f07?q=80&w=2000&auto=format&fit=crop", // KL Twin Towers
@@ -52,6 +52,9 @@ const App: React.FC = () => {
   const [prefillRoute, setPrefillRoute] = useState<{from: string, to: string} | undefined>(undefined);
   const [heroIndex, setHeroIndex] = useState(0);
   const [isWAPopupOpen, setIsWAPopupOpen] = useState(false);
+  // FAQ Accordion State
+  const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(0);
+
   const t = translations[lang];
 
   const trackRef = useRef<HTMLDivElement>(null);
@@ -151,6 +154,10 @@ const App: React.FC = () => {
     scrollToSection('booking');
   };
 
+  const toggleFaq = (index: number) => {
+    setOpenFaqIndex(openFaqIndex === index ? null : index);
+  };
+
   const handleWhatsAppContact = (customMsg?: string) => {
     try {
       if (typeof (window as any).gtag === 'function') {
@@ -167,6 +174,32 @@ const App: React.FC = () => {
     setIsWAPopupOpen(false);
   };
 
+  const getVehicleCategoryLabel = (type: VehicleType) => {
+     if (lang === 'en') {
+       switch(type) {
+         case VehicleType.SEDAN: return 'Economy';
+         case VehicleType.MPV_STD: return 'Family';
+         case VehicleType.MPV_LUX: return 'Business Class';
+         case VehicleType.VAN: return 'Large Group';
+         default: return 'Premium';
+       }
+     } else {
+       switch(type) {
+         case VehicleType.SEDAN: return '经济型';
+         case VehicleType.MPV_STD: return '家庭型';
+         case VehicleType.MPV_LUX: return '商务/豪华型';
+         case VehicleType.VAN: return '大型团体';
+         default: return '精选';
+       }
+     }
+  };
+
+  const faqData = lang === 'en' ? FAQS : [
+    { q: "价格包含过路费和油费吗？", a: "包含！我们的报价包含所有费用。这涵盖了车辆、司机、汽油以及所有路税/海关费用。没有任何隐藏费用。" },
+    { q: "行程可以临时调整或加点吗？", a: "可以的。在不影响整体时间与司机安全驾驶的情况下，行程可灵活调整或加点。我们会尽量配合您的实际需求，让行程更自由、不赶时间。" },
+    { q: "如何付款？", a: "我们接受 PayNow、银行转账或到达目的地后以现金形式支付给司机（马币或新币均可）。高峰期预订可能需要支付少量定金。" }
+  ];
+
   return (
     <div className="min-h-screen flex flex-col font-sans">
       <nav className="sticky top-0 z-50 bg-white/95 backdrop-blur-sm shadow-sm border-b border-gray-100">
@@ -182,23 +215,23 @@ const App: React.FC = () => {
           </div>
           <div className="hidden md:flex items-center gap-4">
             <div className="flex bg-gray-100 rounded-full p-1 border border-gray-200">
-              <button onClick={() => handleLanguageChange('en')} className={`px-3 py-1 rounded-full text-xs font-bold transition-all ${lang === 'en' ? 'bg-primary-600 text-white shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}>EN</button>
-              <button onClick={() => handleLanguageChange('cn')} className={`px-3 py-1 rounded-full text-xs font-bold transition-all ${lang === 'cn' ? 'bg-primary-600 text-white shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}>中文</button>
+              <button onClick={() => handleLanguageChange('en')} className={`px-3 py-1 rounded-full text-xs font-bold transition-all ${lang === 'en' ? 'btn-premium text-white shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}>EN</button>
+              <button onClick={() => handleLanguageChange('cn')} className={`px-3 py-1 rounded-full text-xs font-bold transition-all ${lang === 'cn' ? 'btn-premium text-white shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}>中文</button>
             </div>
-            <button onClick={() => scrollToSection('booking')} className="bg-primary-600 text-white px-5 py-2 rounded-full font-semibold hover:bg-primary-700 transition shadow-md hover:shadow-lg">{t.nav.getQuote}</button>
+            <button onClick={() => scrollToSection('booking')} className="btn-premium btn-shine px-5 py-2 rounded-full font-semibold shadow-md">{t.nav.getQuote}</button>
           </div>
           <button className="md:hidden text-gray-700" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>{mobileMenuOpen ? <X size={28} /> : <Menu size={28} />}</button>
         </div>
         {mobileMenuOpen && (
           <div className="md:hidden bg-white border-t border-gray-100 p-4 space-y-4 shadow-lg animate-fadeIn">
             <div className="flex gap-2 justify-center pb-2 border-b border-gray-50">
-               <button onClick={() => handleLanguageChange('en')} className={`flex-1 py-2 rounded-lg font-bold border ${lang === 'en' ? 'bg-primary-600 text-white border-primary-600' : 'bg-gray-50 text-gray-600 border-gray-200'}`}>English</button>
-               <button onClick={() => handleLanguageChange('cn')} className={`flex-1 py-2 rounded-lg font-bold border ${lang === 'cn' ? 'bg-primary-600 text-white border-primary-600' : 'bg-gray-50 text-gray-600 border-gray-200'}`}>简体中文</button>
+               <button onClick={() => handleLanguageChange('en')} className={`flex-1 py-2 rounded-lg font-bold border ${lang === 'en' ? 'btn-premium text-white border-transparent' : 'bg-gray-50 text-gray-600 border-gray-200'}`}>English</button>
+               <button onClick={() => handleLanguageChange('cn')} className={`flex-1 py-2 rounded-lg font-bold border ${lang === 'cn' ? 'btn-premium text-white border-transparent' : 'bg-gray-50 text-gray-600 border-gray-200'}`}>简体中文</button>
             </div>
             <button onClick={() => scrollToSection('home')} className="block w-full text-left font-medium text-gray-700 py-2">{t.nav.home}</button>
             <button onClick={() => scrollToSection('pricing')} className="block w-full text-left font-medium text-gray-700 py-2">{t.nav.rates}</button>
             <button onClick={() => scrollToSection('fleet')} className="block w-full text-left font-medium text-gray-700 py-2">{t.nav.fleet}</button>
-            <button onClick={() => scrollToSection('booking')} className="block w-full text-center bg-primary-600 text-white font-bold py-3 rounded-lg">{t.nav.bookNow}</button>
+            <button onClick={() => scrollToSection('booking')} className="block w-full text-center btn-premium btn-shine text-white font-bold py-3 rounded-lg">{t.nav.bookNow}</button>
           </div>
         )}
       </nav>
@@ -228,36 +261,53 @@ const App: React.FC = () => {
             <div id="booking" className="lg:w-1/2 w-full max-w-lg mx-auto lg:mr-0">
                <BookingForm prefillRoute={prefillRoute} lang={lang} />
                <button id="whatsapp-help-button" type="button" onClick={() => handleWhatsAppContact()} className="w-full mt-4 flex items-center justify-center gap-2 cursor-pointer hover:scale-[1.02] transition-transform group bg-white/10 backdrop-blur-md p-3 rounded-xl border border-white/20">
-                  <div className="bg-[#25D366] text-white p-1.5 rounded-full shadow-sm group-hover:bg-[#20bd5a] transition-colors flex-shrink-0"><WhatsAppIcon size={20} /></div>
+                  <div className="btn-premium-green btn-shine text-white p-1.5 rounded-full shadow-sm flex-shrink-0"><WhatsAppIcon size={20} /></div>
                   <span className="text-white font-medium text-xs md:text-sm drop-shadow-md text-left leading-snug">{t.booking.whatsappHelp}</span>
                </button>
             </div>
           </div>
         </div>
       </section>
-      <section className="py-20 bg-white">
-        <div className="container mx-auto px-4">
+
+      {/* Features Section */}
+      <section className="py-24 bg-gradient-to-b from-white to-gray-50 relative overflow-hidden">
+        {/* Background blobs */}
+        <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none opacity-40">
+           <div className="absolute -top-[20%] -right-[10%] w-[600px] h-[600px] rounded-full bg-teal-50 blur-[100px]"></div>
+           <div className="absolute bottom-[10%] -left-[10%] w-[500px] h-[500px] rounded-full bg-emerald-50 blur-[100px]"></div>
+        </div>
+
+        <div className="container mx-auto px-4 relative z-10">
           <div className="text-center max-w-2xl mx-auto mb-16">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">{t.features.title}</h2>
-            <p className="text-gray-600">{t.features.subtitle}</p>
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6 tracking-tight">{t.features.title}</h2>
+            <p className="text-lg text-gray-600 leading-relaxed">{t.features.subtitle}</p>
           </div>
           <div className="grid md:grid-cols-3 gap-8">
             {[
-              { icon: <ShieldCheck size={40} className="text-primary-600"/>, title: t.features.f1_title, desc: t.features.f1_desc },
-              { icon: <Map size={40} className="text-primary-600"/>, title: t.features.f2_title, desc: t.features.f2_desc },
-              { icon: <Check size={40} className="text-primary-600"/>, title: t.features.f3_title, desc: t.features.f3_desc },
+              { icon: ShieldCheck, title: t.features.f1_title, desc: t.features.f1_desc },
+              { icon: Map, title: t.features.f2_title, desc: t.features.f2_desc },
+              { icon: Check, title: t.features.f3_title, desc: t.features.f3_desc },
             ].map((f, i) => (
-              <div key={i} className="p-8 rounded-2xl bg-slate-50 border border-slate-100 hover:shadow-lg transition text-center group">
-                <div className="inline-block p-4 bg-white rounded-full shadow-sm mb-6 group-hover:scale-110 transition-transform">{f.icon}</div>
-                <h3 className="text-xl font-bold mb-3">{f.title}</h3>
-                <p className="text-gray-600 leading-relaxed">{f.desc}</p>
+              <div key={i} className="group relative bg-white p-10 rounded-[2rem] shadow-xl shadow-gray-200/50 border border-gray-100 hover:shadow-2xl hover:shadow-primary-500/10 hover:-translate-y-2 transition-all duration-500 ease-out overflow-hidden">
+                {/* Decorative BG Number */}
+                <div className="absolute -right-6 -top-6 text-[10rem] font-bold text-gray-50/80 group-hover:text-primary-50/50 transition-colors duration-500 select-none pointer-events-none leading-none">
+                  {i + 1}
+                </div>
+                
+                <div className="relative z-10 flex flex-col items-center text-center">
+                  <div className="w-20 h-20 rounded-2xl bg-primary-50 text-primary-600 flex items-center justify-center mb-8 group-hover:bg-primary-600 group-hover:text-white transition-all duration-500 shadow-sm group-hover:shadow-lg group-hover:shadow-primary-500/30 group-hover:scale-110">
+                    <f.icon size={36} strokeWidth={1.5} />
+                  </div>
+                  <h3 className="text-2xl font-bold text-gray-900 mb-4 group-hover:text-primary-700 transition-colors duration-300">{f.title}</h3>
+                  <p className="text-gray-600 leading-relaxed">{f.desc}</p>
+                </div>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Popular Destinations Section - Updated Layout */}
+      {/* Popular Destinations Section */}
       <section id="popular-destinations" className="py-20 bg-slate-50 border-t border-slate-100">
         <div className="container mx-auto px-4">
           <div className="text-center max-w-2xl mx-auto mb-10 md:mb-16">
@@ -283,7 +333,7 @@ const App: React.FC = () => {
                   </p>
                   <button 
                     onClick={() => handleQuickBook("Singapore", dest.to)}
-                    className="w-full flex items-center justify-center gap-1 md:gap-2 bg-primary-600 text-white px-2 py-2 md:px-6 md:py-3 rounded-lg md:rounded-xl text-[10px] md:text-base font-bold hover:bg-primary-700 transition-colors shadow-sm md:shadow-md active:scale-95"
+                    className="w-full flex items-center justify-center gap-1 md:gap-2 btn-premium btn-shine px-2 py-2 md:px-6 md:py-3 rounded-lg md:rounded-xl text-[10px] md:text-base font-bold shadow-sm md:shadow-md"
                   >
                     <CalendarDays className="w-3 h-3 md:w-5 md:h-5" />
                     {t.popular.bookAction}
@@ -304,30 +354,70 @@ const App: React.FC = () => {
           <div className="max-w-4xl mx-auto"><PriceTable onBook={handleQuickBook} lang={lang} /></div>
         </div>
       </section>
-      <section id="fleet" className="py-20 bg-white">
+
+      {/* Fleet Section - Redesigned to show whole car */}
+      <section id="fleet" className="py-24 bg-white relative">
         <div className="container mx-auto px-4">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">{t.fleet.title}</h2>
-            <p className="text-gray-600">{t.fleet.subtitle}</p>
+          <div className="text-center mb-16 max-w-2xl mx-auto">
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">{t.fleet.title}</h2>
+            <p className="text-lg text-gray-600">{t.fleet.subtitle}</p>
           </div>
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
             {VEHICLES.map((v) => (
-              <div key={v.type} className="group rounded-xl overflow-hidden shadow-lg border border-gray-100 bg-white">
-                <div className="h-48 overflow-hidden"><img src={v.image} alt={v.type} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" /></div>
-                <div className="p-6">
-                  <h3 className="text-lg font-bold text-gray-900 mb-2">{lang === 'en' ? v.type : (v.type === 'Sedan' ? '轿车' : v.type === 'Standard MPV' ? '标准MPV' : v.type === 'Luxury MPV' ? '豪华MPV' : '大型MPV')}</h3>
-                  <p className="text-sm text-gray-500 mb-4 h-12 leading-tight">{lang === 'en' ? v.description : (v.type === 'Sedan' ? '适合夫妻或行李较少的小家庭。舒适且经济。' : v.type === 'Standard MPV' ? '丰田 Innova 或 Perodua Aruz。适合家庭，行李空间更大。' : v.type === 'Luxury MPV' ? '丰田 Alphard / Vellfire。配备航空座椅和豪华配置。' : '大型多用途车，适合大型团队或带大量行李。')}</p>
-                  <div className="flex justify-between text-sm text-gray-600 font-medium bg-gray-50 p-2 rounded-lg">
-                    <span>{lang === 'en' ? (v.paxLabel || `Max ${v.maxPax} Pax`) : `最高 ${v.maxPax} 位乘客`}</span>
-                    <span>{lang === 'en' ? `Max ${v.maxLuggage} Bags` : `最多 ${v.maxLuggage} 件行李`}</span>
+              <div key={v.type} className="group relative bg-white rounded-[2.5rem] overflow-hidden border border-gray-100 shadow-[0_10px_40px_-10px_rgba(0,0,0,0.08)] hover:shadow-[0_20px_50px_-10px_rgba(13,148,136,0.15)] transition-all duration-500 hover:-translate-y-2 flex flex-col h-full">
+                
+                {/* Image Section - Modified to show whole car */}
+                {/* Changes: h-48 to h-64 on desktop, p-2 padding to maximize image size */}
+                <div className="relative h-48 md:h-64 bg-gradient-to-b from-gray-50 to-gray-100 overflow-hidden flex items-center justify-center p-2">
+                   {/* Category Badge */}
+                   <div className="absolute top-4 left-4 z-20 bg-white/80 backdrop-blur-md px-3 py-1 rounded-full text-[10px] font-bold text-primary-700 uppercase tracking-wider shadow-sm flex items-center gap-1 border border-white">
+                      <span className="w-1.5 h-1.5 rounded-full bg-primary-500 animate-pulse"></span>
+                      {getVehicleCategoryLabel(v.type)}
+                   </div>
+                   
+                   <img src={v.image} alt={v.type} className="w-full h-full object-contain drop-shadow-lg group-hover:scale-110 transition-transform duration-700" />
+                </div>
+
+                {/* Content Section */}
+                <div className="p-6 flex flex-col flex-1">
+                  {/* Title Moved Here */}
+                  <h3 className="text-xl font-bold text-gray-900 mb-2">{lang === 'en' ? v.type : (v.type === 'Sedan' ? '轿车' : v.type === 'Standard MPV' ? '标准MPV' : v.type === 'Luxury MPV' ? '豪华MPV' : '大型MPV')}</h3>
+
+                  {/* Specs Grid */}
+                  <div className="grid grid-cols-2 gap-3 mb-6">
+                    <div className="bg-slate-50 rounded-2xl p-3 flex flex-col items-center justify-center gap-1 border border-slate-100 group-hover:border-primary-100 transition-colors">
+                       <div className="text-primary-600 mb-1"><Users size={20} /></div>
+                       <span className="text-xs text-gray-400 font-bold uppercase tracking-wider">{lang === 'en' ? 'Capacity' : '载客量'}</span>
+                       <span className="text-sm font-bold text-gray-800">{lang === 'en' ? (v.paxLabel?.replace("Max ", "") || `${v.maxPax} Pax`) : `${v.maxPax} 人`}</span>
+                    </div>
+                    <div className="bg-slate-50 rounded-2xl p-3 flex flex-col items-center justify-center gap-1 border border-slate-100 group-hover:border-primary-100 transition-colors">
+                       <div className="text-primary-600 mb-1"><Briefcase size={20} /></div>
+                       <span className="text-xs text-gray-400 font-bold uppercase tracking-wider">{lang === 'en' ? 'Luggage' : '行李'}</span>
+                       <span className="text-sm font-bold text-gray-800">{lang === 'en' ? `Max ${v.maxLuggage}` : `${v.maxLuggage} 件`}</span>
+                    </div>
                   </div>
+
+                  {/* Description */}
+                  <p className="text-gray-600 text-sm leading-relaxed mb-6 flex-1 border-t border-gray-50 pt-4">
+                    {lang === 'en' ? v.description : (v.type === 'Sedan' ? '适合夫妻或行李较少的小家庭。舒适且经济。' : v.type === 'Standard MPV' ? '丰田 Innova 或 Perodua Aruz。适合家庭，行李空间更大。' : v.type === 'Luxury MPV' ? '丰田 Alphard / Vellfire。配备航空座椅和豪华配置。' : '大型多用途车，适合大型团队或带大量行李。')}
+                  </p>
+
+                  {/* Action Button */}
+                  <button 
+                    onClick={() => scrollToSection('booking')}
+                    className="w-full py-3 rounded-xl border border-primary-200 text-primary-700 font-bold text-sm hover:bg-primary-50 hover:border-primary-300 transition-colors flex items-center justify-center gap-2 group-hover:bg-primary-600 group-hover:text-white group-hover:border-transparent"
+                  >
+                    <span>{lang === 'en' ? 'Book This Ride' : '预订此车型'}</span>
+                    <ArrowUpRight size={16} />
+                  </button>
                 </div>
               </div>
             ))}
           </div>
-          <div className="mt-8 text-center"><p className="text-sm text-gray-500 italic">{t.fleet.disclaimer}</p></div>
+          <div className="mt-10 text-center"><p className="text-xs text-gray-400 italic">{t.fleet.disclaimer}</p></div>
         </div>
       </section>
+
       <section className="py-20 bg-slate-900 text-white overflow-hidden select-none">
         <div className="container mx-auto px-4">
           <div className="flex justify-between items-end mb-12">
@@ -347,52 +437,191 @@ const App: React.FC = () => {
           </div>
         </div>
       </section>
-      <section id="faq" className="py-20 bg-gray-50">
-         <div className="container mx-auto px-4 max-w-3xl">
-            <h2 className="text-3xl font-bold text-center mb-12">{t.faq.title}</h2>
+
+      {/* Improved FAQ Section */}
+      <section id="faq" className="py-24 bg-white relative overflow-hidden">
+         {/* Decorative background elements */}
+         <div className="absolute top-0 right-0 -mr-20 -mt-20 w-80 h-80 rounded-full bg-primary-50 blur-[80px] opacity-60 pointer-events-none"></div>
+         <div className="absolute bottom-0 left-0 -ml-20 -mb-20 w-80 h-80 rounded-full bg-blue-50 blur-[80px] opacity-60 pointer-events-none"></div>
+
+         <div className="container mx-auto px-4 max-w-3xl relative z-10">
+            <div className="text-center mb-16">
+              <span className="inline-block bg-primary-100 text-primary-700 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-widest mb-3">FAQ</span>
+              <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">{t.faq.title}</h2>
+            </div>
+            
             <div className="space-y-4">
-              {(lang === 'en' ? FAQS : [
-                { q: "价格包含过路费和油费吗？", a: "包含！我们的报价包含所有费用。这涵盖了车辆、司机、汽油以及所有路税/海关费用。没有任何隐藏费用。" },
-                { q: "行程可以临时调整或加点吗？", a: "可以的。在不影响整体时间与司机安全驾驶的情况下，行程可灵活调整或加点。我们会尽量配合您的实际需求，让行程更自由、不赶时间。" },
-                { q: "如何付款？", a: "我们接受 PayNow、银行转账或到达目的地后以现金形式支付给司机（马币或新币均可）。高峰期预订可能需要支付少量定金。" }
-              ]).map((faq, i) => (
-                <div key={i} className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
-                  <h3 className="font-bold text-lg mb-2 text-gray-900">{faq.q}</h3>
-                  <p className="text-gray-600">{faq.a}</p>
-                </div>
-              ))}
+              {faqData.map((faq, i) => {
+                const isOpen = openFaqIndex === i;
+                return (
+                  <div 
+                    key={i} 
+                    className={`bg-white rounded-2xl border transition-all duration-300 overflow-hidden ${isOpen ? 'border-primary-200 shadow-lg shadow-primary-500/5' : 'border-gray-100 shadow-sm hover:shadow-md hover:border-gray-200'}`}
+                  >
+                    <button 
+                      onClick={() => toggleFaq(i)}
+                      className="w-full flex items-center justify-between p-6 text-left focus:outline-none"
+                    >
+                      <span className={`font-bold text-lg ${isOpen ? 'text-primary-700' : 'text-gray-800'}`}>{faq.q}</span>
+                      <div className={`flex-shrink-0 ml-4 w-8 h-8 rounded-full flex items-center justify-center transition-colors ${isOpen ? 'bg-primary-100 text-primary-600' : 'bg-gray-100 text-gray-400'}`}>
+                        {isOpen ? <Minus size={18} /> : <Plus size={18} />}
+                      </div>
+                    </button>
+                    <div 
+                      className={`overflow-hidden transition-all duration-300 ease-in-out ${isOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'}`}
+                    >
+                      <div className="px-6 pb-6 text-gray-600 leading-relaxed border-t border-gray-50 pt-4">
+                        {faq.a}
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* Need More Help Card */}
+            <div className="mt-12 bg-gray-900 rounded-3xl p-8 md:p-12 text-center text-white relative overflow-hidden shadow-2xl">
+              <div className="absolute top-0 right-0 w-64 h-64 bg-primary-500 rounded-full blur-[100px] opacity-20 pointer-events-none"></div>
+              <div className="relative z-10 flex flex-col items-center">
+                 <div className="w-16 h-16 rounded-full bg-white/10 flex items-center justify-center mb-6 backdrop-blur-sm border border-white/10">
+                    <HelpCircle size={32} className="text-primary-300" />
+                 </div>
+                 <h3 className="text-2xl font-bold mb-3">{lang === 'en' ? 'Still have questions?' : '还有其他问题？'}</h3>
+                 <p className="text-gray-400 max-w-md mx-auto mb-8">{lang === 'en' ? 'Can’t find the answer you’re looking for? Please chat to our friendly team.' : '找不到您想要的答案？欢迎直接联系我们的客服团队。'}</p>
+                 <button 
+                    onClick={() => handleWhatsAppContact()}
+                    className="btn-premium-green btn-shine px-8 py-3 rounded-full font-bold shadow-lg flex items-center gap-2"
+                 >
+                    <MessageCircle size={18} />
+                    {lang === 'en' ? 'Chat on WhatsApp' : 'WhatsApp 咨询'}
+                 </button>
+              </div>
             </div>
          </div>
       </section>
-      <footer className="bg-slate-900 text-slate-300 py-12">
+
+      {/* Pre-Footer CTA */}
+      <div className="relative py-24 bg-slate-900 overflow-hidden">
+        {/* Background Image with Overlay */}
+        <div className="absolute inset-0 z-0">
+          <img 
+            src="https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?q=80&w=2000&auto=format&fit=crop" 
+            alt="Road trip background" 
+            className="w-full h-full object-cover opacity-60"
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-teal-900/90 to-slate-900/80"></div>
+        </div>
+        
+        <div className="container mx-auto px-4 relative z-10">
+           <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-3xl p-8 md:p-12 shadow-2xl flex flex-col md:flex-row items-center justify-between gap-8 text-center md:text-left">
+             <div className="max-w-2xl">
+                <h2 className="text-3xl md:text-5xl font-bold text-white mb-6 tracking-tight">
+                  {lang === 'en' ? 'Ready to start your journey?' : '准备好开始您的旅程了吗？'}
+                </h2>
+                <p className="text-teal-50 text-lg md:text-xl leading-relaxed opacity-90 font-light">
+                  {lang === 'en' ? 'Book your premium private car charter today and travel with peace of mind.' : '立即预订您的专属包车服务，享受安心舒适的跨境体验。'}
+                </p>
+             </div>
+             <div className="flex-shrink-0">
+               <button 
+                 onClick={() => scrollToSection('booking')}
+                 className="bg-white text-teal-800 hover:bg-teal-50 px-8 py-4 rounded-full font-bold text-lg shadow-[0_0_20px_rgba(255,255,255,0.3)] transition-all transform hover:-translate-y-1 hover:shadow-[0_0_30px_rgba(255,255,255,0.5)] flex items-center gap-3 group"
+               >
+                  <span>{lang === 'en' ? 'Book Now' : '立即预订'}</span>
+                  <ArrowRight size={22} className="group-hover:translate-x-1 transition-transform" />
+               </button>
+             </div>
+           </div>
+        </div>
+      </div>
+
+      <footer className="bg-slate-900 text-slate-300 py-16 border-t border-slate-800">
         <div className="container mx-auto px-4">
-          <div className="grid md:grid-cols-4 gap-8 mb-8">
-            <div className="col-span-1 md:col-span-2">
-              <div className="text-2xl font-bold text-white mb-4">RF Travel<span className="text-primary-500"> & Charter Agency</span></div>
-              <p className="max-w-xs text-sm leading-relaxed">{t.footer.desc}</p>
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
+            
+            {/* Brand Column */}
+            <div className="col-span-1 lg:col-span-2 space-y-6">
+              <div className="text-3xl font-bold text-white tracking-tight">
+                RF Travel <span className="text-primary-500 font-light">& Charter Agency</span>
+              </div>
+              <p className="max-w-sm text-slate-400 leading-relaxed text-sm">
+                {t.footer.desc}
+              </p>
+              <div className="flex gap-6 pt-2">
+                 <div className="flex flex-col items-center gap-2">
+                    <div className="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center text-primary-400"><ShieldCheck size={20} /></div>
+                    <span className="text-[10px] uppercase font-bold tracking-wider text-slate-500">{lang === 'en' ? 'Safe' : '安全'}</span>
+                 </div>
+                 <div className="flex flex-col items-center gap-2">
+                    <div className="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center text-primary-400"><Clock size={20} /></div>
+                    <span className="text-[10px] uppercase font-bold tracking-wider text-slate-500">{lang === 'en' ? 'Punctual' : '准时'}</span>
+                 </div>
+                 <div className="flex flex-col items-center gap-2">
+                    <div className="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center text-primary-400"><Star size={20} /></div>
+                    <span className="text-[10px] uppercase font-bold tracking-wider text-slate-500">{lang === 'en' ? 'Comfort' : '舒适'}</span>
+                 </div>
+              </div>
             </div>
+
+            {/* Quick Links */}
             <div>
-              <h4 className="text-white font-bold mb-4">{t.footer.links}</h4>
-              <ul className="space-y-2 text-sm">
-                <li><button onClick={() => scrollToSection('home')} className="hover:text-primary-400">{t.nav.home}</button></li>
-                <li><button onClick={() => scrollToSection('pricing')} className="hover:text-primary-400">{t.nav.rates}</button></li>
-                <li><button onClick={() => scrollToSection('booking')} className="hover:text-primary-400">{t.nav.bookNow}</button></li>
-                <li><button onClick={() => scrollToSection('faq')} className="hover:text-primary-400">{t.nav.faq}</button></li>
+              <h4 className="text-white font-bold mb-6 text-lg">{t.footer.links}</h4>
+              <ul className="space-y-3">
+                {[
+                  { label: t.nav.home, id: 'home' },
+                  { label: t.nav.rates, id: 'pricing' },
+                  { label: t.nav.fleet, id: 'fleet' },
+                  { label: t.nav.bookNow, id: 'booking' },
+                  { label: t.nav.faq, id: 'faq' },
+                ].map((link) => (
+                  <li key={link.id}>
+                    <button 
+                      onClick={() => scrollToSection(link.id)} 
+                      className="group flex items-center gap-2 text-slate-400 hover:text-primary-400 transition-colors"
+                    >
+                      <span className="w-1.5 h-1.5 rounded-full bg-slate-700 group-hover:bg-primary-500 transition-colors"></span>
+                      {link.label}
+                    </button>
+                  </li>
+                ))}
               </ul>
             </div>
+
+            {/* Contact Info */}
             <div>
-              <h4 className="text-white font-bold mb-4">{t.footer.contact}</h4>
-              <ul className="space-y-2 text-sm">
-                <li className="flex items-center gap-2 font-mono"><Phone size={16}/><a href="tel:+60188706966" className="hover:text-primary-400 transition-colors">+60188706966</a></li>
-                <li className="flex items-center gap-2 cursor-pointer hover:text-primary-400" onClick={() => handleWhatsAppContact()}><WhatsAppIcon size={16}/> {lang === 'en' ? 'WhatsApp Us' : '通过WhatsApp联系'}</li>
-                <li className="flex gap-4 mt-4">
-                  <a href="https://www.facebook.com/rftravel.transport" target="_blank" rel="noopener noreferrer"><Facebook size={20} className="hover:text-primary-500 cursor-pointer" /></a>
-                  <a href="https://www.xiaohongshu.com/user/profile/63668abe000000001f01fa4b" target="_blank" rel="noopener noreferrer" className="hover:text-primary-500 cursor-pointer text-xs flex items-center bg-white/10 px-2 py-1 rounded-md font-bold">{lang === 'en' ? 'RED' : '小红书'}</a>
+              <h4 className="text-white font-bold mb-6 text-lg">{t.footer.contact}</h4>
+              <ul className="space-y-4">
+                <li>
+                  <a href="tel:+60188706966" className="group flex items-center gap-3 hover:text-white transition-colors">
+                     <div className="w-8 h-8 rounded-lg bg-slate-800 flex items-center justify-center text-primary-500 group-hover:bg-primary-600 group-hover:text-white transition-all"><Phone size={16}/></div>
+                     <span className="font-mono text-lg font-semibold tracking-wide">+60188706966</span>
+                  </a>
+                </li>
+                <li>
+                  <button onClick={() => handleWhatsAppContact()} className="group flex items-center gap-3 hover:text-white transition-colors w-full text-left">
+                     <div className="w-8 h-8 rounded-lg bg-slate-800 flex items-center justify-center text-green-500 group-hover:bg-green-600 group-hover:text-white transition-all"><WhatsAppIcon size={16}/></div>
+                     <span>{lang === 'en' ? 'WhatsApp Us' : '通过WhatsApp联系'}</span>
+                  </button>
+                </li>
+                <li className="pt-4 flex gap-3">
+                  <a href="https://www.facebook.com/rftravel.transport" target="_blank" rel="noopener noreferrer" className="bg-[#1877F2] hover:bg-[#166fe5] text-white p-2.5 rounded-lg transition-transform hover:-translate-y-1" aria-label="Facebook">
+                    <Facebook size={20} />
+                  </a>
+                  <a href="https://www.xiaohongshu.com/user/profile/63668abe000000001f01fa4b" target="_blank" rel="noopener noreferrer" className="bg-[#FF2442] hover:bg-[#d91f3a] text-white px-3 py-2.5 rounded-lg text-xs font-bold transition-transform hover:-translate-y-1 flex items-center" aria-label="Xiaohongshu">
+                    {lang === 'en' ? 'RED' : '小红书'}
+                  </a>
                 </li>
               </ul>
             </div>
           </div>
-          <div className="border-t border-slate-800 pt-8 text-center text-xs text-slate-500">{t.footer.copy}</div>
+          
+          <div className="border-t border-slate-800 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-slate-500">
+            <div>{t.footer.copy}</div>
+            <div className="flex gap-6">
+               <span>Privacy Policy</span>
+               <span>Terms of Service</span>
+            </div>
+          </div>
         </div>
       </footer>
 
@@ -438,7 +667,7 @@ const App: React.FC = () => {
            <div className="p-3 bg-white border-t border-gray-100">
               <button 
                  onClick={() => handleWhatsAppContact()}
-                 className="w-full bg-[#25D366] text-white py-2.5 rounded-full font-bold text-sm flex items-center justify-center gap-2 shadow-sm hover:bg-[#20bd5a] transition-colors"
+                 className="w-full btn-premium-green btn-shine py-2.5 rounded-full font-bold text-sm flex items-center justify-center gap-2 shadow-sm"
               >
                  <span className="text-white">
                   <Send size={14} className="inline mr-2" />
@@ -450,21 +679,23 @@ const App: React.FC = () => {
       )}
 
       {/* Floating Button */}
-      <button 
-        id="whatsapp-floating-button" 
-        type="button" 
-        onClick={() => setIsWAPopupOpen(!isWAPopupOpen)} 
-        className={`fixed bottom-6 right-6 z-50 p-4 rounded-full shadow-2xl transition-all hover:scale-110 flex items-center justify-center ${isWAPopupOpen ? 'bg-primary-600 text-white' : 'bg-[#25D366] text-white'}`} 
-        aria-label="Contact via WhatsApp"
-      >
-        {isWAPopupOpen ? <X size={32} /> : <WhatsAppIcon size={32} />}
+      <div className="fixed bottom-6 right-6 z-50 group">
+        <button 
+          id="whatsapp-floating-button" 
+          type="button" 
+          onClick={() => setIsWAPopupOpen(!isWAPopupOpen)} 
+          className={`p-4 rounded-full shadow-2xl transition-all group-hover:scale-110 flex items-center justify-center ${isWAPopupOpen ? 'btn-premium-green' : 'btn-premium-green btn-shine'}`} 
+          aria-label="Contact via WhatsApp"
+        >
+          {isWAPopupOpen ? <X size={32} /> : <WhatsAppIcon size={32} />}
+        </button>
         {!isWAPopupOpen && (
-          <span className="absolute -top-1 -right-1 flex h-5 w-5">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#25D366] opacity-75"></span>
-            <span className="relative inline-flex rounded-full h-5 w-5 bg-red-500 border-2 border-white flex items-center justify-center text-[10px] font-bold">1</span>
+          <span className="absolute top-0 right-0 -mt-1 -mr-1 flex h-5 w-5 pointer-events-none group-hover:scale-110 transition-transform origin-bottom-left z-20">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#4ADE80] opacity-75"></span>
+            <span className="relative inline-flex rounded-full h-5 w-5 bg-red-500 border-2 border-white flex items-center justify-center text-[10px] font-bold text-white">1</span>
           </span>
         )}
-      </button>
+      </div>
     </div>
   );
 };
