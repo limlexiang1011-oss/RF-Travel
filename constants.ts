@@ -698,6 +698,9 @@ export const PRICING_MATRIX: RoutePrice[] = [
 export const WHATSAPP_NUMBER = "60188706966"; 
 
 export const TESTIMONIALS = [
+  { image: "https://i.ibb.co/prrpgXF6/Whats-App-Image-2026-01-23-at-4-40-11-PM.jpg" },
+  { image: "https://i.ibb.co/rGHhm1PV/Whats-App-Image-2026-01-23-at-4-40-10-PM-1.jpg" },
+  { image: "https://i.ibb.co/wNvwBpg2/Whats-App-Image-2026-01-23-at-4-40-10-PM.jpg" },
   { image: "https://i.ibb.co/bM83K10c/1080-x-1080.png" },
   { image: "https://i.ibb.co/23ZVbBhg/1080-x-1080-1.png" },
   { image: "https://i.ibb.co/JjzdjC1n/10.png" },
