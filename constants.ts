@@ -406,10 +406,10 @@ export const PRICING_MATRIX: RoutePrice[] = [
     from: "Kuala Lumpur - City Area",
     to: "Ipoh",
     prices: {
-      [VehicleType.SEDAN]: 500,
-      [VehicleType.MPV_STD]: 600,
-      [VehicleType.MPV_LUX]: 700,
-      [VehicleType.VAN]: 750
+      [VehicleType.SEDAN]: 450,
+      [VehicleType.MPV_STD]: 550,
+      [VehicleType.MPV_LUX]: 650,
+      [VehicleType.VAN]: 700
     }
   },
   // KL -> Cameron
