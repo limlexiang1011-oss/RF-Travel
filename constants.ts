@@ -442,8 +442,8 @@ export const PRICING_MATRIX: RoutePrice[] = [
     prices: {
       [VehicleType.SEDAN]: 550,
       [VehicleType.MPV_STD]: 650,
-      [VehicleType.MPV_LUX]: 850,
-      [VehicleType.VAN]: 900
+      [VehicleType.MPV_LUX]: 750,
+      [VehicleType.VAN]: 800
     }
   },
   // KL -> Johor Bahru
